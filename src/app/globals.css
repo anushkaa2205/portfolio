@@ -181,72 +181,112 @@ html.nav-light .nav-meta { color: color-mix(in srgb, var(--ink) 45%, transparent
 }
 
 /* ---------- tech stack rows (inside the aperture) ---------- */
-/* Three equal-height rows. Hovering a row (or focusing it, or tapping it on touch) fades in a
-   one-line marquee of that category. Because the animation only EXISTS while the row is open,
-   leaving it removes the animation and the track snaps back to its start — that is the reset. */
+/*
+   Three equal-height rows on the bone panel. Hovering one (or focusing it, or tapping it on
+   touch) inverts THAT ROW ONLY: a full-bleed black band wipes in, the title fades out, and a
+   one-line marquee of the category floats up in ice. The other two rows are untouched.
+
+   Because the marquee animation only EXISTS while a row is open, leaving the row removes it
+   and the track snaps back to its start — that is the reset, with no JS timer involved.
+*/
 .tk-row {
+  position: relative;
   flex: 1 1 0;
   min-height: 0;
   outline: none;
   transition: border-color 0.4s ease;
 }
-.tk-title { font-size: clamp(28px, 6.6vw, 96px); line-height: 0.86; }
-.tk-tail {
-  color: color-mix(in srgb, var(--ink) 32%, transparent);
-  transition: color 0.5s ease;
+/* the black band. Sits behind the row's own content, runs the full width of the panel. */
+.tk-row::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--ink);
+  transform: scaleY(0);
+  transform-origin: center;
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+  z-index: 0;
 }
 
+.tk-title {
+  position: relative;
+  z-index: 1;
+  font-size: clamp(28px, 6.6vw, 96px);
+  line-height: 0.86;
+  transition: opacity 0.3s ease, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.tk-tail { color: color-mix(in srgb, var(--ink) 32%, transparent); }
+
+/* Centred in the row, so it takes the space the title vacates and nothing reflows.
+   The centring and the float-in share one transform — two would fight. */
 .tk-marquee {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  z-index: 1;
   overflow: hidden;
-  margin-top: 0.4rem;
   opacity: 0;
-  transform: translate3d(0, 10px, 0);
-  transition: opacity 0.35s ease, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translate3d(0, calc(-50% + 16px), 0);
+  transition: opacity 0.4s ease, transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .tk-track { display: flex; width: max-content; will-change: transform; }
 .tk-list { display: flex; margin: 0; padding: 0; list-style: none; }
 .tk-item {
-  font-size: clamp(16px, 2.3vw, 32px);
+  font-size: clamp(20px, 3.2vw, 52px);
   white-space: nowrap;
+  color: var(--accent);
 }
 .tk-item::after {
   content: "\00b7";
   padding: 0 1.5rem;
-  color: color-mix(in srgb, var(--ink) 30%, transparent);
+  color: color-mix(in srgb, var(--accent) 40%, transparent);
 }
 
 /* -50% is exactly one lap, because the track holds the list twice */
 @keyframes tk-left  { from { transform: translate3d(0, 0, 0); }    to { transform: translate3d(-50%, 0, 0); } }
 @keyframes tk-right { from { transform: translate3d(-50%, 0, 0); } to { transform: translate3d(0, 0, 0); } }
 
-.tk-row.is-open,
-.tk-row:focus-visible { border-top-color: var(--ink); }
-.tk-row.is-open .tk-tail,
-.tk-row:focus-visible .tk-tail { color: var(--ink); }
+.tk-row.is-open::before,
+.tk-row:focus-visible::before { transform: scaleY(1); }
+.tk-row.is-open .tk-title,
+.tk-row:focus-visible .tk-title { opacity: 0; transform: translate3d(0, -10px, 0); }
 .tk-row.is-open .tk-marquee,
-.tk-row:focus-visible .tk-marquee { opacity: 1; transform: none; }
+.tk-row:focus-visible .tk-marquee { opacity: 1; transform: translate3d(0, -50%, 0); }
 .tk-row.is-open .tk-track,
 .tk-row:focus-visible .tk-track { animation: tk-left var(--tk-dur, 30s) linear infinite; }
 .tk-row[data-dir="right"].is-open .tk-track,
 .tk-row[data-dir="right"]:focus-visible .tk-track { animation-name: tk-right; }
 
 @media (hover: hover) {
-  .tk-row:hover { border-top-color: var(--ink); }
-  .tk-row:hover .tk-tail { color: var(--ink); }
-  .tk-row:hover .tk-marquee { opacity: 1; transform: none; }
+  .tk-row:hover::before { transform: scaleY(1); }
+  .tk-row:hover .tk-title { opacity: 0; transform: translate3d(0, -10px, 0); }
+  .tk-row:hover .tk-marquee { opacity: 1; transform: translate3d(0, -50%, 0); }
   .tk-row:hover .tk-track { animation: tk-left var(--tk-dur, 30s) linear infinite; }
   .tk-row[data-dir="right"]:hover .tk-track { animation-name: tk-right; }
 }
 
-/* Reduced motion: nothing scrolls and nothing hides. The panel becomes a normal
-   flowing block so all three lists can wrap and be read at once. */
+/* Reduced motion: no band, no scroll, nothing hidden. Titles stay and each list sits
+   underneath in ink, wrapped, so the whole section can be read at once. */
 @media (prefers-reduced-motion: reduce) {
-  .tk-row, .tk-tail, .tk-marquee { transition: none !important; }
-  .tk-marquee { opacity: 1; transform: none; overflow: visible; }
+  .tk-row, .tk-title, .tk-marquee { transition: none !important; }
+  .tk-row::before { display: none; }
+  .tk-row:hover .tk-title,
+  .tk-row.is-open .tk-title { opacity: 1; transform: none; }
+  .tk-marquee {
+    position: static;
+    opacity: 1;
+    transform: none;
+    overflow: visible;
+    margin-top: 0.4rem;
+    padding: 0 1.25rem;
+  }
   .tk-track { animation: none !important; width: auto; flex-wrap: wrap; }
   .tk-track > ul[aria-hidden="true"] { display: none; }
   .tk-list { flex-wrap: wrap; }
-  .tk-item { white-space: normal; }
+  .tk-item { white-space: normal; color: var(--ink); }
+  .tk-item::after { color: color-mix(in srgb, var(--ink) 30%, transparent); }
 }
 
 /* ---------- project rail ---------- */

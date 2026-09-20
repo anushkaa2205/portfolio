@@ -87,8 +87,8 @@ export default function Aperture() {
       <div className="ap-sticky sticky top-0 flex h-svh items-center justify-center overflow-hidden bg-ink">
         {/* what the aperture reveals */}
         <div className="ap-disc absolute inset-0 bg-bone text-ink">
-          <div className="flex h-full flex-col px-5 pb-8 pt-24 sm:px-10 sm:pb-10 sm:pt-28">
-            <span className="ap-stat mono mb-4 block text-ink/45 sm:mb-6">01 — Tech stack</span>
+          <div className="flex h-full flex-col pb-8 pt-24 sm:pb-10 sm:pt-28">
+            <span className="ap-stat mono mb-4 block px-5 text-ink/45 sm:mb-6 sm:px-10">01 — Tech stack</span>
 
             {/*
               Three equal-height rows. Each row reserves room for its own list, so opening one
@@ -110,7 +110,7 @@ export default function Aperture() {
                   // pixel speed — a 4-item row and a 15-item row would otherwise differ wildly.
                   style={{ "--tk-dur": `${g.items.length * 2.6}s` } as CSSProperties}
                 >
-                  <h3 className="tk-title disp pt-3 sm:pt-4">
+                  <h3 className="tk-title disp px-5 pt-3 sm:px-10 sm:pt-4">
                     {g.lead} <span className="tk-tail">{g.tail}</span>
                   </h3>
 
