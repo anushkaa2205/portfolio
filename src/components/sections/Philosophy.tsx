@@ -72,7 +72,7 @@ export default function Philosophy() {
     >
       <div className="grid gap-10 md:grid-cols-[220px_1fr_220px]">
         <div className="mono flex flex-col gap-3">
-          <span className="text-accent">01 — Philosophy</span>
+          <span className="text-accent">03 — Philosophy</span>
           <span className="text-dim">Words light up as you scroll</span>
         </div>
 

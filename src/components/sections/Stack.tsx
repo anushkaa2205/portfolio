@@ -41,7 +41,7 @@ export default function Stack() {
       aria-label="Tech stack"
     >
       <div className="mono mb-8 flex items-center justify-between px-5 sm:px-10">
-        <span className="text-accent">02 — Stack</span>
+        <span className="text-accent">04 — Stack</span>
         <span className="text-dim">Hover to pause</span>
       </div>
       <Row items={site.stack.rowA} dir="left" phase={0.45} />

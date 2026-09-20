@@ -14,42 +14,68 @@ Read this first in any future session before touching code.
 - Libraries welcome: Framer Motion, GSAP, Three.js — not required, but smoothness is non-negotiable.
 - Projects must be data-driven so she can edit them herself later.
 
-## 2. The concept — "Eclipse"
+## 2. The concept — "Aperture"
 
-One motif carries the whole site: a solar eclipse.
-A thin **sun** ring with a soft corona, and a black **moon** disc crossing it. Scrolling moves the moon:
+*(v2, 20 Sept 2026. The previous concept was "Eclipse" — a shader sun/moon driven by scroll.
+It is not deleted: `src/components/Eclipse.tsx` is intact and the `data-eclipse` attributes are
+still on Hero, Philosophy and Stack. Re-mounting it is two lines in `layout.tsx`. The v1.1 tree
+is also kept whole under `_backup-v1.1-eclipse/` and in commit `d61910c`.)*
 
-| Section        | Where the eclipse is                       | Phase                          |
-|----------------|--------------------------------------------|--------------------------------|
-| 00 Hero        | centre, large, partly covering the name    | 0.6 — crescent                 |
-| 01 Philosophy  | small, top-right                           | 0.62                           |
-| 02 Stack       | hidden (r = 0, o = 0)                      | —                              |
-| 03 Work        | centre of the featured block               | **1.0 — totality**, full corona |
-| 04 Beyond code | hidden (o = 0)                             | 1.3 (bridging value only)      |
-| 05 Contact     | small, top-right                           | 1.45 — the moon leaves         |
-| Case study     | small, top-right                           | 1.0                            |
+One motif carries the site: a **hole that opens**.
 
-The name letters rise from behind the disc on load. Totality lands exactly on the featured project.
-The contact headline ("Say hi.") has three outlined ghost copies that trail it by scroll velocity — the one idea borrowed from concept F.
+A small bone-coloured disc sits on black. Scroll, and it grows until it has swallowed the
+viewport, revealing the index strip that was already inside it. That is the whole trick — the
+numbers are not faded in over a finished panel, they are behind the hole the entire time and
+the hole simply gets big enough to show them.
 
-Design decisions that are locked:
-- **Type**: Big Shoulders (variable, 900 for display, 500 for the manifesto), Instrument Sans for body, JetBrains Mono for labels. All self-hosted from `src/fonts/`.
-- **Colour tokens** (`src/app/globals.css`): ink `#070707`, ink-2 `#111010`, line `#1f1d1b`, bone `#ede8e0`, bone-2 `#b5b0a8`, dim `#6e6a64`, off `#3a3733`, accent `#cfe3ff`.
-  Alternatives Anushka can swap in for the accent: gold `#d9b46a`, lilac `#b9a6f5`, sage `#a8c5a0` (change `--accent` in globals.css **and** `ACCENT` in `Eclipse.tsx`).
+The same masking idea is then reused at three different scales, which is what makes it read as
+one system rather than a pile of effects:
+
+| Where | The mask |
+|---|---|
+| 01 Index | a clip-path circle grows from 6vmax to 170vmax, revealing the bone panel |
+| 02 Work | each project title rises out of an `overflow: hidden` line box, with an outlined ghost settling behind it |
+| 03 Philosophy | words brighten from `--off` to `--bone` as the scrub crosses them (unchanged from v1) |
+| 06 Contact | "Say hi." with outlined ghosts trailing by scroll velocity (unchanged from v1) |
+| Case study | the disc veil grows to cover, then the route changes (unchanged from v1) |
+
+Design decisions that are locked (unchanged from v1 unless noted):
+- **Type**: Big Shoulders (900 display, 500 sub), Instrument Sans body, JetBrains Mono labels. Self-hosted.
+- **Colour tokens**: ink `#070707`, ink-2 `#111010`, line `#1f1d1b`, bone `#ede8e0`, bone-2 `#b5b0a8`,
+  dim `#6e6a64`, off `#3a3733`, accent `#cfe3ff`.
+- **The one inversion.** The Index panel is the only light section on the page. It is the payoff of
+  the aperture and it should stay the only one, or it stops being an event.
 - No gradients, no rounded cards, no shadows, no emoji, no cursor gimmicks.
+
+### The nav has to invert
+The fixed nav uses a dark scrim (`bg-ink/75`). Over the bone Index panel that puts dark text on a
+dark scrim over a light page — illegible. `Aperture.tsx` toggles `html.nav-light`, and `globals.css`
+restyles `.nav-scrim` / `.nav-bar` / `.nav-meta` for it.
+
+The toggle window is deliberately **not** the animation's range. The scrub timeline ends at
+`bottom bottom` — where the sticky panel unsticks — but the panel then stays on screen, under the
+nav, for a further viewport-height while it scrolls away. The trigger runs `top top-=400` →
+`bottom top+=100` instead. Under reduced motion there is no hole, so the start becomes `top top`.
+**If you change the aperture's height, re-check this window.**
 
 ## 3. Sections (final)
 
-1. **Hero** — ANUSHKA at ~27vw, KUMARI outlined bottom-right, role + tagline + availability, "Scroll — the moon moves".
-2. **Philosophy** — three-line manifesto that lights up word by word (charcoal → bone) as it crosses the viewport; the accent phrase stays lit.
-3. **Stack** — two opposite-direction marquees of the tech stack in display type, a small moon mark between items, pause on hover.
-4. **Work** — featured project inside the eclipse at totality, then the remaining projects as a 3-up list. Every project opens a full case-study route.
-5. **Beyond code** — a single-line strip after Work: "Co-CEO of a student-run non-profit." (moved out of Philosophy so that section stays pure manifesto).
-6. **Contact** — "Say hi." with velocity ghosts, Email (click copies), GitHub, LinkedIn, Resume, footer line.
+0. **Hero** — ANUSHKA at ~27vw, KUMARI outlined bottom-right, role + tagline + availability.
+1. **Index** (`Aperture.tsx`) — the hole opens onto three figures: 04 projects shipped, 02 live in
+   production, AWS (VPC · ALB · two AZs). Sourced from `site.stats`. Nothing fades back out; the
+   panel scrolls away with its content intact, or the tail of the section is a screen of empty bone.
+2. **Work** (`sections/Work.tsx`) — a horizontal rail, one project per screen, under a sticky
+   viewport. Progress line, live index counter, snap so it rests on a whole project rather than
+   between two half-panels. Below 768px it degrades to a plain vertical stack: no pin, no
+   horizontal scroll, everything already visible.
+3. **Philosophy** — the three-line manifesto, word-by-word scrub. Unchanged.
+4. **Stack** — two opposite-direction marquees. Unchanged.
+5. **Beyond code** — single-line strip. Unchanged.
+6. **Contact** — "Say hi." with velocity ghosts. Unchanged.
 
-Case study (`/work/[slug]`): title, year / status / role, summary, The problem → What I built → The hard part → Outcome, Stack chips, GitHub + Live links, "Next project".
+Case study (`/work/[slug]`): unchanged.
 
-Cut on purpose: Experience/timeline (she asked to skip), blog, playground, photo.
+Cut on purpose: Experience/timeline, blog, playground, photo.
 
 ## 4. Tech stack & why
 
@@ -82,7 +108,8 @@ src/
     work/[slug]/     ← case-study route (static)
     globals.css      ← tokens, type utilities, marquee keyframes, status dots
   components/
-    Eclipse.tsx      ← the shader + keyframe interpolation (reads data-eclipse attrs)
+    Aperture.tsx     ← the Index section: the clip-path hole + the nav-light toggle
+    Eclipse.tsx      ← v1 shader, NO LONGER MOUNTED (kept so the eclipse can be restored)
     SmoothScroll.tsx ← Lenis + GSAP ticker + ScrollTrigger sync
     Nav.tsx          ← fixed, mix-blend-difference, Lenis scrollTo
     CaseLink.tsx     ← link that grows the black veil, then navigates
@@ -121,15 +148,40 @@ Done (v1, 16 Sept 2026): all five sections, four case studies with real content 
 
 Done (v1.1, 17 Sept 2026): nav legibility fix, "Say hi." period fix, Beyond code split out of Philosophy into its own section — now six sections (Hero · Philosophy · Stack · Work · Beyond code · Contact) — build passing, re-verified at 1440×900 and 390×844.
 
+Done (v2, 20 Sept 2026): concept changed from Eclipse to Aperture at Anushka's request after a
+reference reel. Eclipse unmounted (not deleted). New `Aperture.tsx` Index section, `Work.tsx`
+rebuilt as a snapping horizontal rail, nav inversion over the light panel, sections renumbered,
+page order now Hero · Index · Work · Philosophy · Stack · Beyond code · Contact. `tsc --noEmit`
+clean, `next build` passes, all four case studies still prerender. Verified with headless
+screenshots at 1440x900 and 390x844, plus a reduced-motion pass (clip-path none, all reveals at
+their final state, rail stacked, no console errors).
+
 Open:
 - [ ] `public/resume.pdf` — Anushka uploads it.
 - [ ] Project covers: `cover` is supported in the data model but no images are used yet (the site is typographic by design; add only if a still is *good*).
 - [ ] OG image (`app/opengraph-image.tsx`) — a black card with the eclipse and the name.
 - [ ] Custom domain + Vercel deploy.
 - [ ] Optional: a `/work` index page listing all projects (nav currently scrolls to the section).
-- [ ] Optional: replace the `Naap` GitHub link with a public mirror if the SIH repo stays private.
+- [ ] Optional: replace the `Udgam` GitHub link with a public mirror if the SIH repo stays private.
 
 ## 9. Decisions log
+
+- **v2: Eclipse → Aperture.** Anushka asked for the motion system from an Instagram reel
+  (@andrewwdominic). Four of its six moves already existed here and in a more developed form
+  (word-scrub, marquee, ghost type, growing-disc veil); what was genuinely missing was a stat
+  strip and a horizontal project rail. The advice was to add those two and keep Eclipse, because
+  two circular motifs — a veil disc, a section disc and a moon — read as noise. Anushka chose to
+  replace Eclipse outright. Done as asked, but built on her own tokens and type rather than
+  copying the reference site, and Eclipse was unmounted rather than deleted.
+- **Stat figures** are `04 projects / 02 live / AWS VPC·ALB·2AZs` — all derivable from
+  `projects.ts`, chosen over vanity counts because they survive an interview question.
+- **The rail snaps.** Without it, scroll rests between two half-panels and text clips at the
+  viewport edge. Content is also capped at `max-w-[1180px]` and centred so a partial panel shows
+  margin, not a sliced word.
+- **Sticky, never `pin: true`.** ScrollTrigger's pin fights Lenis. Both the aperture and the rail
+  use CSS `position: sticky` with a tall parent instead.
+- **`--ap-r` is unitless.** The clip-path does `calc(var(--ap-r) * 1vmax)` so GSAP only ever
+  interpolates a plain number — interpolating `6vmin → 170vmax` does not work.
 
 - Rejected concepts (kept on the design canvas for reference): A Paper & Ink (editorial light), B/D Spec Sheet (engineering drawing, light and dark), C ASCII object, F Pill (light, video pill). E Eclipse chosen; F's "Say hi." ending merged in.
 - Red corona dropped for ice at Anushka's request ("too horror poster").

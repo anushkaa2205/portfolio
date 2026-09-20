@@ -58,7 +58,7 @@ export default function Hero() {
         </div>
 
         <div className="mono hero-fade hidden flex-col items-end gap-3 text-dim sm:flex">
-          <span>Scroll — the moon moves</span>
+          <span>Scroll — the aperture opens</span>
           <span className="block h-12 w-px bg-bone/70" />
         </div>
       </div>

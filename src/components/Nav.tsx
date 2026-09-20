@@ -26,8 +26,8 @@ export default function Nav() {
   };
 
   return (
-    <header className="fixed inset-x-0 top-0 z-30 border-b border-line/70 bg-ink/75 backdrop-blur-md">
-      <nav className="mono flex items-center justify-between px-5 py-6 text-bone sm:px-10">
+    <header className="nav-scrim fixed inset-x-0 top-0 z-30 border-b border-line/70 bg-ink/75 backdrop-blur-md">
+      <nav className="nav-bar mono flex items-center justify-between px-5 py-6 text-bone sm:px-10">
         <Link href="/" className="link-line">
           {site.name}
         </Link>
@@ -40,7 +40,7 @@ export default function Nav() {
             </li>
           ))}
         </ul>
-        <span className="hidden text-dim md:inline">{site.availability}</span>
+        <span className="nav-meta hidden text-dim md:inline">{site.availability}</span>
         <a href={home ? "#contact" : "/#contact"} onClick={(e) => go(e, "#contact")} className="link-line sm:hidden">
           Contact
         </a>

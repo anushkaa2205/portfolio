@@ -149,3 +149,99 @@ body {
 .status-archived { background: transparent; }
 
 .eclipse-layer, .eclipse-layer * { pointer-events: none !important; }
+
+/* ---------- nav over the light panel ---------- */
+/* The default scrim is dark-on-dark-page. Over the bone aperture it inverts,
+   otherwise the wordmark and links sit dark-on-dark and vanish. */
+html.nav-light .nav-scrim {
+  background: color-mix(in srgb, var(--bone) 78%, transparent);
+  border-bottom-color: color-mix(in srgb, var(--ink) 14%, transparent);
+}
+html.nav-light .nav-bar { color: var(--ink); }
+html.nav-light .nav-meta { color: color-mix(in srgb, var(--ink) 45%, transparent); }
+.nav-scrim,
+.nav-bar,
+.nav-meta { transition: background 0.5s ease, color 0.5s ease, border-color 0.5s ease; }
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-scrim, .nav-bar, .nav-meta { transition: none; }
+}
+
+/* ---------- aperture ---------- */
+/* The hole is a clip-path circle whose radius is one animated custom property.
+   --ap-r is a unitless number; the vmax multiplication happens in calc so GSAP
+   only ever interpolates a plain number. */
+.ap-stage { height: 220svh; }
+.ap-sticky { --ap-r: 6; }
+.ap-disc { clip-path: circle(calc(var(--ap-r) * 1vmax) at 50% 50%); will-change: clip-path; }
+.ap-ring {
+  width: calc(var(--ap-r) * 2vmax);
+  height: calc(var(--ap-r) * 2vmax);
+  will-change: width, height, opacity;
+}
+
+/* ---------- project rail ---------- */
+/* Mobile first: a plain vertical stack, nothing pinned, everything already visible. */
+.rail-stage { height: auto; }
+.rail-sticky { position: static; height: auto; }
+.rail-track { display: flex; flex-direction: column; }
+.rail-panel { width: 100%; padding-top: 14vh; padding-bottom: 14vh; }
+
+.rail-title { position: relative; display: block; line-height: 0.82; }
+.rail-title .mask { display: block; overflow: hidden; }
+.rail-ghost {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: block;
+  line-height: 0.82;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--off);
+  pointer-events: none;
+  transform: translate3d(0.05em, 0.13em, 0);
+}
+.rail-bar { transform: scaleX(0); will-change: transform; }
+
+@media (min-width: 768px) {
+  .rail-stage { height: var(--rail-h); }
+  .rail-sticky { position: sticky; top: 0; height: 100svh; }
+  .rail-track { flex-direction: row; flex: 1 1 auto; will-change: transform; }
+  .rail-panel { width: 100vw; flex: 0 0 100vw; padding-top: 0; padding-bottom: 0; }
+
+  /* Inactive panels hold their reveal; [data-active] flips one panel at a time. */
+  .rail-solid {
+    display: block;
+    transform: translate3d(0, 110%, 0);
+    transition: transform 1.1s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform;
+  }
+  .rail-ghost {
+    opacity: 0;
+    transform: translate3d(0, 0, 0);
+    transition: opacity 0.9s ease, transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .rail-fade {
+    opacity: 0;
+    transform: translate3d(0, 28px, 0);
+    transition: opacity 0.9s ease 0.12s, transform 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.12s;
+  }
+  .rail-panel[data-active="true"] .rail-solid { transform: translate3d(0, 0, 0); }
+  .rail-panel[data-active="true"] .rail-ghost { opacity: 1; transform: translate3d(0.05em, 0.13em, 0); }
+  .rail-panel[data-active="true"] .rail-fade { opacity: 1; transform: none; }
+}
+
+/* ---------- reduced motion: render the final state, move nothing ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .ap-stage { height: 100svh; }
+  .ap-disc { clip-path: none; }
+  .ap-ring { display: none; }
+
+  .rail-stage { height: auto; }
+  .rail-sticky { position: static; height: auto; }
+  .rail-track { flex-direction: column; }
+  .rail-panel { width: 100%; flex: 0 0 auto; padding-top: 14vh; padding-bottom: 14vh; }
+  .rail-solid { transform: none; transition: none; }
+  .rail-ghost { opacity: 1; transform: translate3d(0.05em, 0.13em, 0); transition: none; }
+  .rail-fade { opacity: 1; transform: none; transition: none; }
+  .rail-bar { transform: scaleX(1); }
+}

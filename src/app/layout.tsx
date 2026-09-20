@@ -3,7 +3,6 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { site } from "@/data/site";
 import SmoothScroll from "@/components/SmoothScroll";
-import Eclipse from "@/components/Eclipse";
 import Nav from "@/components/Nav";
 
 // Self-hosted variable fonts (no request to Google at runtime or build time).
@@ -42,7 +41,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-screen bg-ink text-bone">
         <SmoothScroll>
           <Nav />
-          <Eclipse />
           {children}
         </SmoothScroll>
       </body>

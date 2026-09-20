@@ -21,12 +21,10 @@ export const site = {
 
   /** The manifesto on the Philosophy section. Each string is one line; words light up on scroll. */
   manifesto: <string[]>[
-    "Most portfolios are screenshots in a grid.",
-    "I’d rather build the one page you remember —",
-    "and the backend that never makes it stutter.",
+    "Building systems that work.",
   ],
   /** The word(s) in the manifesto that take the accent colour. */
-  manifestoAccent: <string[]>["one page"],
+  manifestoAccent: <string[]>["work."],
 
   /** Shown in its own strip after Work. */
   beyondCode: "Co-CEO of a student-run non-profit.",
@@ -39,6 +37,24 @@ export const site = {
 
   /** What you're working on right now (shown in the hero footer and the Now slot). */
   now: "Building SpecForge — AI-generated product specs, with real accounts and credits.",
+  /** The three-up strip revealed inside the aperture. Keep these defensible. */
+  stats: [
+    {
+      value: "04",
+      label: "Projects shipped",
+      meta: "Udgam \u00b7 Obscura \u00b7 Medora \u00b7 SpecForge",
+    },
+    {
+      value: "02",
+      label: "Live in production",
+      meta: "Obscura \u00b7 Medora",
+    },
+    {
+      value: "AWS",
+      label: "VPC \u00b7 ALB \u00b7 two AZs",
+      meta: "Obscura \u2014 load-balanced EC2, IAM role to S3",
+    },
+  ],
 } as const;
 
 export type Site = typeof site;

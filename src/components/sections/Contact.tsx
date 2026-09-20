@@ -73,7 +73,7 @@ export default function Contact() {
     >
       <div className="mono ct-in flex items-center justify-between">
         <span className="flex gap-6">
-          <span className="text-accent">05 — Contact</span>
+          <span className="text-accent">06 — Contact</span>
           <span className="hidden text-dim sm:inline">The moon leaves</span>
         </span>
         <span className="hidden text-dim sm:inline">Replies within a day</span>

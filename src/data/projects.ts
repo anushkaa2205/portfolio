@@ -29,8 +29,8 @@ export type Project = {
 
 export const projects: Project[] = [
   {
-    slug: "naap",
-    title: "Naap",
+    slug: "udgam",
+    title: "Udgam",
     year: "2026",
     status: "in-progress",
     summary:
@@ -82,7 +82,7 @@ export const projects: Project[] = [
     summary:
       "An AI health assistant: conversational symptom analysis, a personal dashboard, and branded PDF reports.",
     stack: ["Node.js", "Express 5", "MongoDB", "Passport", "JWT", "Gemini", "Groq", "Three.js", "GSAP"],
-    role: "Built with Harshita · backend, auth and AI integration",
+    role: "Backend, auth and AI integration",
     links: {
       github: "https://github.com/anushkaa2205/symptom-checker",
       live: "https://symptom-checker-b53o.onrender.com",
