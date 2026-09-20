@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import type { CSSProperties } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { site } from "@/data/site";
@@ -12,7 +13,7 @@ gsap.registerPlugin(ScrollTrigger);
  * The aperture.
  *
  * A circular hole opens from the centre of the viewport until it swallows the screen,
- * revealing the index strip beneath. The numbers are already inside the hole before it
+ * revealing the tech stack beneath. The rows are already inside the hole before it
  * opens — that is the whole trick; they are not faded in over a finished panel.
  *
  * Scroll-linked via clip-path on --ap-r (compositor-friendly), sticky rather than
@@ -20,6 +21,8 @@ gsap.registerPlugin(ScrollTrigger);
  */
 export default function Aperture() {
   const root = useRef<HTMLElement>(null);
+  // Touch only: which row is open. Hover devices are handled entirely in CSS.
+  const [open, setOpen] = useState<number | null>(null);
 
   useEffect(() => {
     const reduce = prefersReducedMotion();
@@ -80,25 +83,52 @@ export default function Aperture() {
   }, []);
 
   return (
-    <section ref={root} id="index" className="ap-stage relative" aria-label="Index">
+    <section ref={root} id="index" className="ap-stage relative" aria-label="Tech stack">
       <div className="ap-sticky sticky top-0 flex h-svh items-center justify-center overflow-hidden bg-ink">
         {/* what the aperture reveals */}
         <div className="ap-disc absolute inset-0 bg-bone text-ink">
-          <div className="flex h-full flex-col justify-center px-5 sm:px-10">
-            <span className="ap-stat mono mb-10 block text-ink/45 sm:mb-14">01 — Index</span>
-            <div className="flex flex-col gap-8 sm:gap-12">
-              {site.stats.map((s) => (
+          <div className="flex h-full flex-col px-5 pb-8 pt-24 sm:px-10 sm:pb-10 sm:pt-28">
+            <span className="ap-stat mono mb-4 block text-ink/45 sm:mb-6">01 — Tech stack</span>
+
+            {/*
+              Three equal-height rows. Each row reserves room for its own list, so opening one
+              moves nothing — the list just fades up into space that was already there.
+              Hover/keyboard are pure CSS; `open` exists only so a tap can do the same on touch.
+            */}
+            <div className="flex min-h-0 flex-1 flex-col border-b border-ink/15">
+              {site.techStack.map((g, i) => (
                 <div
-                  key={s.label}
-                  className="ap-stat flex flex-col gap-1 border-t border-ink/15 pt-4 sm:flex-row sm:items-baseline sm:justify-between sm:gap-10"
+                  key={g.lead}
+                  tabIndex={0}
+                  data-dir={i % 2 === 1 ? "right" : "left"}
+                  onClick={() => {
+                    if (window.matchMedia("(hover: hover)").matches) return;
+                    setOpen((o) => (o === i ? null : i));
+                  }}
+                  className={`ap-stat tk-row border-t border-ink/15 ${open === i ? "is-open" : ""}`}
+                  // Duration scales with the item count so every row scrolls at the same
+                  // pixel speed — a 4-item row and a 15-item row would otherwise differ wildly.
+                  style={{ "--tk-dur": `${g.items.length * 2.6}s` } as CSSProperties}
                 >
-                  <span className="disp leading-none" style={{ fontSize: "clamp(56px, 10vw, 140px)" }}>
-                    {s.value}
-                  </span>
-                  <span className="flex flex-col sm:items-end sm:text-right">
-                    <span className="disp-500" style={{ fontSize: "clamp(19px, 2.3vw, 30px)" }}>{s.label}</span>
-                    <span className="mono mt-1 text-ink/45">{s.meta}</span>
-                  </span>
+                  <h3 className="tk-title disp pt-3 sm:pt-4">
+                    {g.lead} <span className="tk-tail">{g.tail}</span>
+                  </h3>
+
+                  <div className="tk-marquee">
+                    <div className="tk-track">
+                      <ul className="tk-list">
+                        {g.items.map((t) => (
+                          <li key={t} className="tk-item disp-500">{t}</li>
+                        ))}
+                      </ul>
+                      {/* the seamless second lap; hidden from screen readers so the list reads once */}
+                      <ul className="tk-list" aria-hidden="true">
+                        {g.items.map((t) => (
+                          <li key={`${t}-clone`} className="tk-item disp-500">{t}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>

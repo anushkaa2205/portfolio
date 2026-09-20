@@ -21,10 +21,10 @@ export const site = {
 
   /** The manifesto on the Philosophy section. Each string is one line; words light up on scroll. */
   manifesto: <string[]>[
-    "Building systems that work.",
+    "I'm still a student, and I plan to stay one. I care about the space between the code and the person using it. I'd rather build one thing that feels right than ten that just work. I sweat the details most people scroll past, because that's where the feeling lives. Every project teaches me something, and I let it.",
   ],
   /** The word(s) in the manifesto that take the accent colour. */
-  manifestoAccent: <string[]>["work."],
+  manifestoAccent: <string[]>["feels right"],
 
   /** Shown in its own strip after Work. */
   beyondCode: "Co-CEO of a student-run non-profit.",
@@ -37,22 +37,32 @@ export const site = {
 
   /** What you're working on right now (shown in the hero footer and the Now slot). */
   now: "Building SpecForge — AI-generated product specs, with real accounts and credits.",
-  /** The three-up strip revealed inside the aperture. Keep these defensible. */
-  stats: [
+  /**
+   * The tech stack panel (the aperture reveals it). Three rows; each row shows its list on hover.
+   * `lead` is the big word, `tail` is the dimmer rest of the sentence. Only list what you would
+   * happily be asked about in an interview.
+   */
+  techStack: [
     {
-      value: "04",
-      label: "Projects shipped",
-      meta: "Udgam \u00b7 Obscura \u00b7 Medora \u00b7 SpecForge",
+      lead: "Technologies",
+      tail: "I work with",
+      items: [
+        "Python", "TypeScript", "React", "Next.js", "Node.js", "Express", "Flask",
+        "Tailwind", "GSAP", "Three.js", "Framer Motion", "NumPy",
+      ],
     },
     {
-      value: "02",
-      label: "Live in production",
-      meta: "Obscura \u00b7 Medora",
+      lead: "Platforms",
+      tail: "I build on",
+      items: [
+        "AWS", "EC2", "ALB", "VPC", "S3", "IAM", "Render", "Supabase", "PostgreSQL",
+        "MongoDB", "HYCOM", "Anthropic API", "Gemini", "Groq", "Google OAuth",
+      ],
     },
     {
-      value: "AWS",
-      label: "VPC \u00b7 ALB \u00b7 two AZs",
-      meta: "Obscura \u2014 load-balanced EC2, IAM role to S3",
+      lead: "Tools",
+      tail: "I work with",
+      items: ["Git", "GitHub", "Docker", "Google Earth Engine"],
     },
   ],
 } as const;

@@ -180,6 +180,75 @@ html.nav-light .nav-meta { color: color-mix(in srgb, var(--ink) 45%, transparent
   will-change: width, height, opacity;
 }
 
+/* ---------- tech stack rows (inside the aperture) ---------- */
+/* Three equal-height rows. Hovering a row (or focusing it, or tapping it on touch) fades in a
+   one-line marquee of that category. Because the animation only EXISTS while the row is open,
+   leaving it removes the animation and the track snaps back to its start — that is the reset. */
+.tk-row {
+  flex: 1 1 0;
+  min-height: 0;
+  outline: none;
+  transition: border-color 0.4s ease;
+}
+.tk-title { font-size: clamp(28px, 6.6vw, 96px); line-height: 0.86; }
+.tk-tail {
+  color: color-mix(in srgb, var(--ink) 32%, transparent);
+  transition: color 0.5s ease;
+}
+
+.tk-marquee {
+  overflow: hidden;
+  margin-top: 0.4rem;
+  opacity: 0;
+  transform: translate3d(0, 10px, 0);
+  transition: opacity 0.35s ease, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.tk-track { display: flex; width: max-content; will-change: transform; }
+.tk-list { display: flex; margin: 0; padding: 0; list-style: none; }
+.tk-item {
+  font-size: clamp(16px, 2.3vw, 32px);
+  white-space: nowrap;
+}
+.tk-item::after {
+  content: "\00b7";
+  padding: 0 1.5rem;
+  color: color-mix(in srgb, var(--ink) 30%, transparent);
+}
+
+/* -50% is exactly one lap, because the track holds the list twice */
+@keyframes tk-left  { from { transform: translate3d(0, 0, 0); }    to { transform: translate3d(-50%, 0, 0); } }
+@keyframes tk-right { from { transform: translate3d(-50%, 0, 0); } to { transform: translate3d(0, 0, 0); } }
+
+.tk-row.is-open,
+.tk-row:focus-visible { border-top-color: var(--ink); }
+.tk-row.is-open .tk-tail,
+.tk-row:focus-visible .tk-tail { color: var(--ink); }
+.tk-row.is-open .tk-marquee,
+.tk-row:focus-visible .tk-marquee { opacity: 1; transform: none; }
+.tk-row.is-open .tk-track,
+.tk-row:focus-visible .tk-track { animation: tk-left var(--tk-dur, 30s) linear infinite; }
+.tk-row[data-dir="right"].is-open .tk-track,
+.tk-row[data-dir="right"]:focus-visible .tk-track { animation-name: tk-right; }
+
+@media (hover: hover) {
+  .tk-row:hover { border-top-color: var(--ink); }
+  .tk-row:hover .tk-tail { color: var(--ink); }
+  .tk-row:hover .tk-marquee { opacity: 1; transform: none; }
+  .tk-row:hover .tk-track { animation: tk-left var(--tk-dur, 30s) linear infinite; }
+  .tk-row[data-dir="right"]:hover .tk-track { animation-name: tk-right; }
+}
+
+/* Reduced motion: nothing scrolls and nothing hides. The panel becomes a normal
+   flowing block so all three lists can wrap and be read at once. */
+@media (prefers-reduced-motion: reduce) {
+  .tk-row, .tk-tail, .tk-marquee { transition: none !important; }
+  .tk-marquee { opacity: 1; transform: none; overflow: visible; }
+  .tk-track { animation: none !important; width: auto; flex-wrap: wrap; }
+  .tk-track > ul[aria-hidden="true"] { display: none; }
+  .tk-list { flex-wrap: wrap; }
+  .tk-item { white-space: normal; }
+}
+
 /* ---------- project rail ---------- */
 /* Mobile first: a plain vertical stack, nothing pinned, everything already visible. */
 .rail-stage { height: auto; }
@@ -232,8 +301,9 @@ html.nav-light .nav-meta { color: color-mix(in srgb, var(--ink) 45%, transparent
 
 /* ---------- reduced motion: render the final state, move nothing ---------- */
 @media (prefers-reduced-motion: reduce) {
-  .ap-stage { height: 100svh; }
-  .ap-disc { clip-path: none; }
+  .ap-stage { height: auto; }
+  .ap-sticky { position: static; height: auto; }
+  .ap-disc { position: static; clip-path: none; padding: 8vh 0; }
   .ap-ring { display: none; }
 
   .rail-stage { height: auto; }

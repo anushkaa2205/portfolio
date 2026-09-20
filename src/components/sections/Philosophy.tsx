@@ -52,9 +52,10 @@ export default function Philosophy() {
           stagger: 0.08,
           ease: "none",
           scrollTrigger: {
-            trigger: ".ph-text",
-            start: "top 75%",
-            end: "bottom 45%",
+            // The section is tall and its content sticky, so the fill gets real scroll room.
+            trigger: root.current,
+            start: "top 35%",
+            end: "bottom bottom",
             scrub: 0.6,
           },
         },
@@ -67,16 +68,18 @@ export default function Philosophy() {
     <section
       ref={root}
       id="philosophy"
-      className="relative flex min-h-svh flex-col justify-center px-5 py-28 sm:px-10"
+      className="relative"
+      style={{ height: "260svh" }}
       data-eclipse='{"x":0.88,"y":0.36,"r":0.07,"phase":0.62,"o":1,"m":{"x":0.86,"y":0.15,"r":0.05}}'
     >
+      <div className="sticky top-0 flex h-svh flex-col justify-center px-5 py-28 sm:px-10">
       <div className="grid gap-10 md:grid-cols-[220px_1fr_220px]">
         <div className="mono flex flex-col gap-3">
           <span className="text-accent">03 — Philosophy</span>
           <span className="text-dim">Words light up as you scroll</span>
         </div>
 
-        <div className="ph-text disp-500 text-bone" style={{ fontSize: "clamp(40px, 6.4vw, 92px)" }}>
+        <div className="ph-text disp-500 text-bone" style={{ fontSize: "clamp(28px, 3.6vw, 56px)", lineHeight: 1.15 }}>
           {lines.map((words, li) => (
             <p key={li} className="m-0">
               {words.map((w, wi) => (
@@ -96,6 +99,7 @@ export default function Philosophy() {
           <span>Eclipse 62 %</span>
           <span>totality at Work</span>
         </div>
+      </div>
       </div>
     </section>
   );
