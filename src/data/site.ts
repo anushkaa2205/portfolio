@@ -7,9 +7,8 @@ export const site = {
   firstName: "ANUSHKA",
   lastName: "KUMARI",
   role: "Third-year B.Tech CSE · India",
-  tagline:
-    "I build interfaces with weight and timing — the kind you feel before you read — and the backend that keeps them at 60 fps.",
-  availability: "Open to Summer ’27 internships",
+  tagline: "Mostly I am just very curious with a keyboard.",
+  availability: "Open to internships",
   location: "India · UTC+5:30",
 
   email: "anushkaa22kumari@gmail.com",

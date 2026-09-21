@@ -41,11 +41,10 @@ export default function Hero() {
         </h1>
       </div>
 
-      <div className="relative z-10 mt-auto grid grid-cols-1 items-end gap-8 sm:grid-cols-[1fr_auto_auto] sm:gap-10">
-        <div className="max-w-[420px]">
+      <div className="relative z-10 mt-auto grid grid-cols-1 items-end gap-8 sm:grid-cols-[1fr_auto] sm:gap-10">
+        <div className="max-w-[420px] sm:mb-14">
           <p className="mono hero-fade text-accent">{site.role}</p>
           <p className="hero-fade mt-3 text-[17px] leading-[1.5] text-bone-2 sm:text-lg">{site.tagline}</p>
-          <p className="mono hero-fade mt-4 text-dim">{site.availability}</p>
         </div>
 
         <div className="mask hero-last sm:order-none">
@@ -57,10 +56,6 @@ export default function Hero() {
           </span>
         </div>
 
-        <div className="mono hero-fade hidden flex-col items-end gap-3 text-dim sm:flex">
-          <span>Scroll — the aperture opens</span>
-          <span className="block h-12 w-px bg-bone/70" />
-        </div>
       </div>
     </section>
   );

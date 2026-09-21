@@ -72,11 +72,7 @@ export default function Contact() {
       data-eclipse='{"x":0.9,"y":0.3,"r":0.06,"phase":1.45,"o":1,"m":{"x":0.86,"y":0.46,"r":0.05}}'
     >
       <div className="mono ct-in flex items-center justify-between">
-        <span className="flex gap-6">
-          <span className="text-accent">05 — Contact</span>
-          <span className="hidden text-dim sm:inline">The moon leaves</span>
-        </span>
-        <span className="hidden text-dim sm:inline">Replies within a day</span>
+        <span className="text-accent">05 — Contact</span>
       </div>
 
       <div className="relative flex-1">
@@ -120,7 +116,7 @@ export default function Contact() {
 
       <div className="mono ct-in mt-8 flex flex-col gap-2 border-t border-line pt-5 text-dim sm:flex-row sm:items-center sm:justify-between">
         <span>
-          © {new Date().getFullYear()} {site.name} · Next.js · GSAP · Lenis · Three.js
+          © {new Date().getFullYear()} {site.name}
         </span>
         <span>{site.location}</span>
       </div>

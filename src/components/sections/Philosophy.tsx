@@ -76,7 +76,6 @@ export default function Philosophy() {
       <div className="grid gap-10 md:grid-cols-[220px_1fr_220px]">
         <div className="mono flex flex-col gap-3">
           <span className="text-accent">03 — Philosophy</span>
-          <span className="text-dim">Words light up as you scroll</span>
         </div>
 
         <div className="ph-text disp-500 text-bone" style={{ fontSize: "clamp(28px, 3.6vw, 56px)", lineHeight: 1.15 }}>
@@ -95,10 +94,6 @@ export default function Philosophy() {
           ))}
         </div>
 
-        <div className="mono hidden flex-col items-end gap-2 text-right text-dim md:flex">
-          <span>Eclipse 62 %</span>
-          <span>totality at Work</span>
-        </div>
       </div>
       </div>
     </section>
