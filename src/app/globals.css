@@ -311,6 +311,24 @@ html.nav-light .nav-meta { color: color-mix(in srgb, var(--ink) 45%, transparent
 }
 .rail-bar { transform: scaleX(0); will-change: transform; }
 
+/* project shot: a screenshot panel that fades into the page on its left edge, so the
+   title can sit over it without fighting the pixels. */
+.rail-shot {
+  position: relative;
+  overflow: hidden;
+  background: #0b0b0b;
+}
+.rail-shot-img {
+  object-fit: cover;
+  object-position: left top;
+  filter: saturate(0.9) brightness(0.82);
+  transform: scale(1.04);
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), filter 0.6s ease;
+}
+.rail-hit:hover .rail-shot-img { filter: none; transform: scale(1); }
+.rail-cta { --tw-ring-color: transparent; }
+
+
 @media (min-width: 768px) {
   .rail-stage { height: var(--rail-h); }
   .rail-sticky { position: sticky; top: 0; height: 100svh; }
@@ -337,6 +355,47 @@ html.nav-light .nav-meta { color: color-mix(in srgb, var(--ink) 45%, transparent
   .rail-panel[data-active="true"] .rail-solid { transform: translate3d(0, 0, 0); }
   .rail-panel[data-active="true"] .rail-ghost { opacity: 1; transform: translate3d(0.05em, 0.13em, 0); }
   .rail-panel[data-active="true"] .rail-fade { opacity: 1; transform: none; }
+
+  /* the shot fades out on its left so the title can sit over it, and bleeds off the right edge */
+  .rail-shot {
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 16%);
+    mask-image: linear-gradient(to right, transparent 0%, #000 16%);
+    margin-right: calc(-1 * ((100vw - min(1320px, 100vw)) / 2 + 40px));
+  }
+  /* a scrim over the left of the shot, so the title stays readable on light screenshots */
+  .rail-shot::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background: linear-gradient(to right, rgba(7, 7, 7, 0.94) 0%, rgba(7, 7, 7, 0.6) 20%, rgba(7, 7, 7, 0) 46%);
+  }
+
+  /* the shot wipes in from the left with the rest of the panel */
+  .rail-shot {
+    clip-path: inset(0 0 0 12%);
+    opacity: 0;
+    transition: clip-path 1.15s cubic-bezier(0.16, 1, 0.3, 1) 0.1s, opacity 0.8s ease 0.1s;
+  }
+  .rail-panel[data-active="true"] .rail-shot { clip-path: inset(0 0 0 0); opacity: 1; }
+  .rail-shot-img { transform: scale(1.08); }
+  .rail-panel[data-active="true"] .rail-shot-img { transform: scale(1.02); }
+  .rail-hit:hover .rail-shot-img { transform: scale(1); }
+
+  /* the next project, whispered at the right edge */
+  .rail-next {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    writing-mode: vertical-rl;
+    transform: translateY(-50%);
+    opacity: 0;
+    letter-spacing: 0.16em;
+    font-size: 11px;
+    transition: opacity 0.9s ease 0.35s;
+  }
+  .rail-panel[data-active="true"] .rail-next { opacity: 0.45; }
 }
 
 /* ---------- reduced motion: render the final state, move nothing ---------- */
@@ -354,4 +413,7 @@ html.nav-light .nav-meta { color: color-mix(in srgb, var(--ink) 45%, transparent
   .rail-ghost { opacity: 1; transform: translate3d(0.05em, 0.13em, 0); transition: none; }
   .rail-fade { opacity: 1; transform: none; transition: none; }
   .rail-bar { transform: scaleX(1); }
+  .rail-shot { clip-path: none; opacity: 1; transition: none; }
+  .rail-shot-img { transform: none; transition: none; }
+  .rail-next { display: none; }
 }

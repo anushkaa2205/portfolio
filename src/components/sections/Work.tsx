@@ -5,6 +5,7 @@ import type { CSSProperties } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { visibleProjects } from "@/data/projects";
+import Image from "next/image";
 import CaseLink from "@/components/CaseLink";
 import { prefersReducedMotion } from "@/lib/scroll";
 
@@ -92,46 +93,76 @@ export default function Work() {
         </div>
 
         <div className="rail-track">
-          {visibleProjects.map((p, i) => (
-            <article
-              key={p.slug}
-              data-active={i === 0 ? "true" : "false"}
-              className="rail-panel flex flex-col justify-center px-5 sm:px-10"
-            >
-              <div className="mx-auto grid w-full max-w-[1180px] items-end gap-8 sm:grid-cols-[1fr_minmax(280px,400px)] sm:gap-14">
-                <div>
-                  <span className="rail-fade mono mb-6 block text-dim">
-                    {String(i + 1).padStart(2, "0")} — {p.year}
-                  </span>
-                  <h3 className="rail-title disp text-bone" style={{ fontSize: "clamp(58px, 10.5vw, 176px)" }}>
-                    <span className="mask">
-                      <span className="rail-solid">{p.title}</span>
-                    </span>
-                    <span className="rail-ghost" aria-hidden="true">
-                      {p.title}
-                    </span>
-                  </h3>
-                </div>
+          {visibleProjects.map((p, i) => {
+            const next = visibleProjects[i + 1];
+            return (
+              <article
+                key={p.slug}
+                data-active={i === 0 ? "true" : "false"}
+                className="rail-panel relative"
+              >
+                <CaseLink
+                  href={`/work/${p.slug}`}
+                  origin="pointer"
+                  className="rail-hit group block h-full w-full"
+                >
+                  <div className="mx-auto flex h-full w-full max-w-[1320px] flex-col justify-between gap-10 px-5 py-20 sm:px-10 md:py-24">
+                    <div className="rail-fade mono flex items-center justify-between text-dim">
+                      <span>
+                        {String(i + 1).padStart(2, "0")} — {p.year}
+                      </span>
+                      <span className="flex items-center gap-2 text-accent">
+                        <span className={`status-dot status-${p.status}`} />
+                        {statusLabel[p.status]}
+                      </span>
+                    </div>
 
-                <div className="flex flex-col items-start gap-4 sm:items-end sm:text-right">
-                  <span className="rail-fade mono text-dim">{p.stack.slice(0, 4).join(" · ")}</span>
-                  <p className="rail-fade max-w-[420px] text-[15px] leading-relaxed text-bone-2 sm:text-base">
-                    {p.summary}
-                  </p>
-                  <span className="rail-fade mono flex items-center gap-2 text-accent">
-                    <span className={`status-dot status-${p.status}`} />
-                    {statusLabel[p.status]}
+                    <div className="grid items-center gap-10 md:grid-cols-[1fr_1.05fr] md:gap-0">
+                      <div className="relative z-10 md:pr-6">
+                        <h3 className="rail-title disp text-bone" style={{ fontSize: "clamp(52px, 9vw, 168px)" }}>
+                          <span className="mask">
+                            <span className="rail-solid">{p.title}</span>
+                          </span>
+                          <span className="rail-ghost" aria-hidden="true">
+                            {p.title}
+                          </span>
+                        </h3>
+                        <p className="rail-fade mt-6 max-w-[440px] text-[15px] leading-relaxed text-bone-2 sm:text-base">
+                          {p.summary}
+                        </p>
+                      </div>
+
+                      {p.cover ? (
+                        <figure className="rail-shot relative aspect-[16/9] w-full md:-ml-[6%] md:aspect-auto md:h-[56vh]">
+                          <Image
+                            src={p.cover}
+                            alt={`${p.title} interface`}
+                            fill
+                            sizes="(max-width: 768px) 100vw, 58vw"
+                            className="rail-shot-img"
+                            priority={i === 0}
+                          />
+                        </figure>
+                      ) : null}
+                    </div>
+
+                    <div className="rail-fade mono flex flex-wrap items-center justify-between gap-4 text-dim">
+                      <span>{p.stack.slice(0, 4).join(" · ")}</span>
+                      <span className="rail-cta inline-flex items-center gap-3 border border-bone px-5 py-3.5 text-bone transition-colors duration-500 group-hover:bg-bone group-hover:text-ink">
+                        Open case study <span aria-hidden="true">→</span>
+                      </span>
+                    </div>
+                  </div>
+                </CaseLink>
+
+                {next ? (
+                  <span className="rail-next mono pointer-events-none hidden text-dim md:block" aria-hidden="true">
+                    Next — {next.title}
                   </span>
-                  <CaseLink
-                    href={`/work/${p.slug}`}
-                    className="rail-fade mono inline-flex items-center gap-3 border border-bone px-5 py-3.5 transition-colors duration-500 hover:bg-bone hover:text-ink"
-                  >
-                    Open case study <span aria-hidden="true">→</span>
-                  </CaseLink>
-                </div>
-              </div>
-            </article>
-          ))}
+                ) : null}
+              </article>
+            );
+          })}
         </div>
 
         <div className="px-5 pb-10 sm:px-10">

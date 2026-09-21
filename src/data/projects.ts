@@ -30,6 +30,7 @@ export type Project = {
 export const projects: Project[] = [
   {
     slug: "udgam",
+    cover: "/work/udgam.webp",
     title: "Udgam",
     year: "2026",
     status: "in-progress",
@@ -54,6 +55,7 @@ export const projects: Project[] = [
   },
   {
     slug: "obscura",
+    cover: "/work/obscura.webp",
     title: "Obscura",
     year: "2026",
     status: "live",
@@ -76,6 +78,7 @@ export const projects: Project[] = [
   },
   {
     slug: "medora",
+    cover: "/work/medora.webp",
     title: "Medora",
     year: "2025",
     status: "live",
@@ -98,6 +101,7 @@ export const projects: Project[] = [
   },
   {
     slug: "specforge",
+    cover: "/work/specforge.webp",
     title: "SpecForge",
     year: "2026",
     status: "in-progress",
