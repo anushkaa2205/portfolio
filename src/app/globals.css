@@ -171,7 +171,7 @@ html.nav-light .nav-meta { color: color-mix(in srgb, var(--ink) 45%, transparent
 /* The hole is a clip-path circle whose radius is one animated custom property.
    --ap-r is a unitless number; the vmax multiplication happens in calc so GSAP
    only ever interpolates a plain number. */
-.ap-stage { height: 220svh; }
+.ap-stage { height: 340svh; }
 .ap-sticky { --ap-r: 6; }
 .ap-disc { clip-path: circle(calc(var(--ap-r) * 1vmax) at 50% 50%); will-change: clip-path; }
 .ap-ring {
@@ -416,4 +416,246 @@ html.nav-light .nav-meta { color: color-mix(in srgb, var(--ink) 45%, transparent
   .rail-shot { clip-path: none; opacity: 1; transition: none; }
   .rail-shot-img { transform: none; transition: none; }
   .rail-next { display: none; }
+}
+
+/* ---------- the spread (act one of the aperture) ---------- */
+/*
+   Before the hole opens, a fanned pile of cards sits on top of the statement — the pill.
+   On scroll the pile untwists and throws itself outward to scattered rest positions, and
+   the statement it was covering is what stays behind. Only then does the hole open.
+
+   Two nested boxes per card, because two different things move it: the outer one carries
+   the pointer parallax, the inner one carries the scroll timeline. One element trying to
+   hold both transforms means whichever writes last wins.
+
+   Size comes in through --sp-w (a vw number) and --sp-h (a vh number), so the cards are
+   tall panels rather than one fixed ratio, and the phone override is a single rule.
+*/
+.sp-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.sp-head {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 1;
+  /* narrow enough that the mid-left and mid-right cards land beside the glyphs rather
+     than on top of them — losing the B off BUILDING reads as a bug, not as depth */
+  width: min(880px, 78vw);
+  transform: translate3d(-50%, -50%, 0);
+  text-align: center;
+}
+.sp-head .disp {
+  font-size: clamp(34px, 6.6vw, 104px);
+  line-height: 0.86;
+}
+.sp-accent { color: var(--accent); }
+
+/* One mask per word. inline-block so the line still wraps on its own, with the
+   word gap carried by the mask's margin — a space inside an overflow:hidden box
+   collapses at the end of the line and the words would run together. */
+.sp-mask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  margin-right: 0.24em;
+}
+.sp-word {
+  display: inline-block;
+  will-change: transform;
+}
+
+/* the hint, alive only while the pile is still a pile */
+.sp-hint {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 4vh;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--bone-2);
+}
+.sp-hint svg { color: var(--accent); animation: sp-bob 1.6s ease-in-out infinite; }
+@keyframes sp-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(4px); }
+}
+
+.sp-card {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: var(--sp-z, 1);
+  width: calc(var(--sp-w, 18) * 1vw);
+  height: calc(var(--sp-h, 26) * 1vh);
+  will-change: transform;
+}
+.sp-card-in {
+  width: 100%;
+  height: 100%;
+  will-change: transform;
+}
+
+.sp-face {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--ink-2);
+  box-shadow: 0 34px 70px -24px rgba(0, 0, 0, 0.95);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.sp-face img {
+  object-fit: cover;
+  object-position: var(--sp-pos, center);
+  filter: saturate(0.88) brightness(0.8);
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s ease;
+}
+/* the label has to sit on something; screenshots are busy right where it lands */
+.sp-face::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(to top, rgba(7, 7, 7, 0.9) 0%, rgba(7, 7, 7, 0.1) 38%, transparent 70%);
+}
+
+/* only the four cards that lead somewhere are links, so only those light up */
+a.sp-face { cursor: pointer; }
+a.sp-face:hover,
+a.sp-face:focus-visible {
+  border-color: var(--accent);
+  box-shadow: 0 34px 70px -24px rgba(0, 0, 0, 0.95), 0 0 26px -4px color-mix(in srgb, var(--accent) 45%, transparent);
+  outline: none;
+}
+a.sp-face:hover img,
+a.sp-face:focus-visible img { transform: scale(1.06); filter: none; }
+
+.sp-go {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.15rem 0.35rem;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  background: rgba(7, 7, 7, 0.88);
+  font-size: clamp(6px, 0.58vw, 9px);
+  letter-spacing: 0.12em;
+  color: var(--bone-2);
+  opacity: 0;
+  transition: opacity 0.22s ease, color 0.22s ease, border-color 0.22s ease;
+}
+a.sp-face:hover .sp-go,
+a.sp-face:focus-visible .sp-go { opacity: 1; color: var(--accent); border-color: color-mix(in srgb, var(--accent) 45%, transparent); }
+
+/* spec card — no screenshot, just the fact */
+.sp-spec {
+  position: absolute;
+  inset: 0;
+  padding: 0.9rem 0.9rem 2.1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background:
+    linear-gradient(to bottom, rgba(237, 232, 224, 0.04), transparent 55%),
+    repeating-linear-gradient(to bottom, transparent 0 13px, rgba(237, 232, 224, 0.03) 13px 14px);
+}
+.sp-spec-title {
+  font-size: clamp(13px, 1.5vw, 26px);
+  line-height: 0.94;
+  color: var(--bone);
+}
+.sp-spec-meta {
+  font-size: clamp(6px, 0.6vw, 10px);
+  letter-spacing: 0.1em;
+  color: var(--dim);
+  line-height: 1.6;
+}
+
+/* the footer strip every card carries, the way the rail panels are labelled */
+.sp-tag {
+  position: absolute;
+  left: 7px;
+  right: 7px;
+  bottom: 7px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.3rem 0.45rem;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  background: rgba(7, 7, 7, 0.88);
+  font-size: clamp(6px, 0.58vw, 9px);
+  letter-spacing: 0.12em;
+  color: var(--bone-2);
+  white-space: nowrap;
+  overflow: hidden;
+  transition: border-color 0.3s ease, color 0.3s ease;
+}
+.sp-tag span:first-child { overflow: hidden; text-overflow: ellipsis; }
+.sp-tag span:last-child { color: var(--accent); flex: none; }
+a.sp-face:hover .sp-tag,
+a.sp-face:focus-visible .sp-tag { border-color: color-mix(in srgb, var(--accent) 40%, transparent); color: var(--bone); }
+
+/* Phones: fewer cards, and the ones that stay get one fixed size, because 18vw of a
+   390px screen is a postage stamp and eight of them is soup. */
+@media (max-width: 767px) {
+  .sp-card {
+    width: 42vw;
+    height: 19vh;
+  }
+  .sp-card[data-optional="true"] { display: none; }
+  .sp-spec-title { font-size: 14px; }
+  .sp-spec-meta { font-size: 7px; }
+  .sp-tag, .sp-go { font-size: 7px; }
+  .sp-head .disp { font-size: clamp(30px, 8.4vw, 60px); }
+}
+
+/* Reduced motion: nothing piles up and nothing spreads. The statement is just a heading
+   above the panel, and the cards are dropped rather than left in a frozen scatter that
+   would read as broken layout. */
+@media (prefers-reduced-motion: reduce) {
+  /* the sticky box is a centring flexbox; unstacked it would sit the statement
+     beside the panel instead of above it */
+  .ap-sticky { display: block; }
+
+  /* The panel's rows share the viewport with `flex: 1` inside an `h-full` column.
+     Once the stage is auto-height there is no full height to divide, so every row
+     resolves to zero and the three headings print on top of each other. */
+  .ap-disc { height: auto; }
+  .ap-disc > div { height: auto; padding-top: 6vh; padding-bottom: 8vh; }
+  .tk-row { flex: 0 0 auto; padding-bottom: 1.6rem; }
+
+  /* full-bleed display type is for the scrolled version; here it is just a heading */
+  .sp-head .disp { font-size: clamp(32px, 6vw, 76px); }
+
+  .sp-card, .sp-hint { display: none; }
+  .sp-layer {
+    position: static;
+    padding: 12vh 5vw 6vh;
+  }
+  .sp-head {
+    position: static;
+    transform: none;
+    width: auto;
+    text-align: left;
+  }
+  .sp-face img, .sp-face, .sp-go, .sp-tag { transition: none; }
+  .sp-hint svg { animation: none; }
 }
