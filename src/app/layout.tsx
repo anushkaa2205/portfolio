@@ -4,6 +4,7 @@ import "./globals.css";
 import { site } from "@/data/site";
 import SmoothScroll from "@/components/SmoothScroll";
 import Nav from "@/components/Nav";
+import Loader from "@/components/Loader";
 
 // Self-hosted variable fonts (no request to Google at runtime or build time).
 const bigShoulders = localFont({
@@ -39,7 +40,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${bigShoulders.variable} ${instrument.variable} ${jetbrains.variable}`}>
       <body className="min-h-screen bg-ink text-bone">
+        {/* without JS the loader would never lift */}
+        <noscript>
+          <style>{`.loader{display:none}`}</style>
+        </noscript>
         <SmoothScroll>
+          <Loader />
           <Nav />
           {children}
         </SmoothScroll>
