@@ -114,10 +114,11 @@ body {
 }
 
 /* ---------- hero name: footage inside the letters ---------- */
-/* The clip is a neon glitch on black, so it is *screened* over a soft base: black parts of the
-   footage leave the letters in the base tone (never invisible), and the glitch lights them up. */
+/* The clip is a neon glitch on black. The letters sit on a bright bone base and the footage is
+   blended with `difference`: black parts of the clip leave the name fully bright, and each glitch
+   streak flips the colour underneath it, so the name stays bright with colour flashing through. */
 .hero-name {
-  --name-base: #4a4842;
+  --name-base: #f2ede4;
   position: relative;
   isolation: isolate;
 }
@@ -140,8 +141,8 @@ body {
   height: 100%;
   /* fill, not cover: every letter gets the whole frame, not just a strip through the middle */
   object-fit: fill;
-  mix-blend-mode: screen;
-  filter: brightness(1.35) saturate(1.15);
+  mix-blend-mode: difference;
+  filter: brightness(1.2) saturate(1.2);
   opacity: 0;
   transition: opacity 1.2s ease;
 }
