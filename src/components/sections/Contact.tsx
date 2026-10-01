@@ -5,6 +5,9 @@ import gsap from "gsap";
 import { site } from "@/data/site";
 import { scrollState, prefersReducedMotion } from "@/lib/scroll";
 
+/** how far the ghost outlines leap per unit of scroll speed (was 1, then 2.6) */
+const JUMP = 3.6;
+
 export default function Contact() {
   const root = useRef<HTMLElement>(null);
   const ghosts = useRef<HTMLDivElement[]>([]);
@@ -18,10 +21,10 @@ export default function Contact() {
       // ease towards the live velocity so the trail settles instead of snapping
       state.v += (scrollState.velocity - state.v) * 0.12;
       const v = Math.max(-24, Math.min(24, state.v));
-      const step = Math.min(26, window.innerWidth * 0.018);
+      const step = Math.min(44, window.innerWidth * 0.03);
       ghosts.current.forEach((g, i) => {
         const k = (i + 1) * 0.55;
-        g.style.transform = `translate3d(0, ${-(i + 1) * step - v * k}px, 0) skewY(${(-v / 24) * 2.5 * k}deg)`;
+        g.style.transform = `translate3d(0, ${-(i + 1) * step - v * k * JUMP}px, 0) skewY(${(-v / 24) * 2.5 * k}deg)`;
       });
     };
     gsap.ticker.add(tick);
@@ -55,7 +58,7 @@ export default function Contact() {
   };
 
   const links = [
-    { label: "Email", href: `mailto:${site.email}`, meta: copied ? "copied ✓" : "click to copy", onClick: copy },
+    { label: "Email", href: `mailto:${site.email}`, meta: copied ? "copied ✓" : site.email, lower: true, onClick: copy },
     { label: "GitHub", href: site.links.github, meta: "@anushkaa2205 ↗" },
     { label: "LinkedIn", href: site.links.linkedin, meta: "/in/anushka ↗" },
     { label: "Resume", href: site.links.resume, meta: "PDF ↓" },
@@ -83,17 +86,14 @@ export default function Contact() {
               if (el) ghosts.current[i] = el;
             }}
             aria-hidden="true"
-            className="disp outline-text pointer-events-none absolute left-0 top-[16vh] select-none will-change-transform"
+            className="disp outline-text pointer-events-none absolute -bottom-1.5 left-0 select-none will-change-transform"
             style={{ fontSize: size, opacity: o, lineHeight: 0.8, transform: `translate3d(0, ${-(i + 1) * 0.055}em, 0)` }}
           >
             {headline}
           </div>
         ))}
-        <h2 className="disp ct-in absolute left-0 top-[16vh] text-bone" style={{ fontSize: size, lineHeight: 0.8 }}>
+        <h2 className="disp ct-in absolute -bottom-1.5 left-0 text-bone" style={{ fontSize: size, lineHeight: 0.8 }}>
           {headline}
-          <span className="text-accent" style={{ fontSize: "0.28em", lineHeight: 1, verticalAlign: "baseline" }}>
-            .
-          </span>
         </h2>
 
         <ul className="absolute bottom-0 right-0 flex w-full max-w-[440px] flex-col">
@@ -107,7 +107,7 @@ export default function Contact() {
                 className="group flex items-center justify-between py-5 text-xl transition-colors duration-500 hover:text-accent sm:text-[22px]"
               >
                 <span>{l.label}</span>
-                <span className="mono text-dim transition-colors duration-500 group-hover:text-bone">{l.meta}</span>
+                <span className={`mono text-dim transition-colors duration-500 group-hover:text-bone${l.lower ? " mono-lower" : ""}`}>{l.meta}</span>
               </a>
             </li>
           ))}

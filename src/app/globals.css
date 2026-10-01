@@ -82,6 +82,7 @@ body {
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
+.mono.mono-lower { text-transform: none; }
 .outline-text {
   color: transparent;
   -webkit-text-stroke: 1px var(--bone);
