@@ -7,7 +7,7 @@ export const site = {
   firstName: "ANUSHKA",
   lastName: "KUMARI",
   role: "Third-year B.Tech CSE · India",
-  tagline: "Mostly I am just very curious with a keyboard.",
+  tagline: "Mostly, I am just very curious with a keyboard.",
   availability: "Open to internships",
   location: "India · UTC+5:30",
 

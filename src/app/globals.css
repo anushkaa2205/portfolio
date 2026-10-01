@@ -232,6 +232,17 @@ html.nav-light .nav-scrim {
 }
 html.nav-light .nav-bar { color: var(--ink); }
 html.nav-light .nav-meta { color: color-mix(in srgb, var(--ink) 45%, transparent); }
+/* icy-blue navigation: wordmark + links in the accent, availability a quieter tint of it */
+.nav-bar { color: var(--accent); }
+.nav-meta { color: color-mix(in srgb, var(--accent) 55%, transparent); }
+.nav-scrim { border-bottom-color: color-mix(in srgb, var(--accent) 16%, transparent); }
+html.nav-light .nav-bar { color: #27467a; }
+html.nav-light .nav-meta { color: color-mix(in srgb, #27467a 60%, transparent); }
+html.nav-light .nav-scrim { border-bottom-color: color-mix(in srgb, #27467a 22%, transparent); }
+
+/* surname: solid off-white, bottom-right, away from the name */
+.hero-surname-text { color: var(--bone); line-height: 0.85; }
+
 .nav-scrim,
 .nav-bar,
 .nav-meta { transition: background 0.5s ease, color 0.5s ease, border-color 0.5s ease; }

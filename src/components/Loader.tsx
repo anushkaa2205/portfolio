@@ -5,10 +5,12 @@ import gsap from "gsap";
 import { useLenis } from "@/components/SmoothScroll";
 import { loader, prefersReducedMotion } from "@/lib/scroll";
 
-/** How long the loader stays up, counted from when the clip starts playing, in seconds. */
-const LOAD_SECONDS = 3;
-/** If the clip has not started playing by now, start the clock anyway. */
-const START_FALLBACK_MS = 1500;
+/** The loader is fully gone this many seconds after the page first paints (wait + curtain lift). */
+const LOAD_SECONDS = 2;
+/** Length of the curtain lift, in seconds; the wait before it is LOAD_SECONDS minus this. */
+const LIFT_SECONDS = 0.6;
+/** Never lift sooner than this after the effect runs, so slow hydration still shows the word. */
+const MIN_SHOW_MS = 350;
 
 /**
  * Intro loader: plays a clip full-screen for LOAD_SECONDS, then lifts to reveal the hero.
@@ -58,14 +60,15 @@ export default function Loader() {
       } else if (reduce) {
         out.to(el, { opacity: 0, duration: 0.4, ease: "none" }, 0).add(reveal, 0.1);
       } else {
-        out.to(el, { clipPath: "inset(0 0 100% 0)", duration: 0.95, ease: "expo.inOut" }, 0).add(reveal, 0.4);
+        out.to(el, { clipPath: "inset(0 0 100% 0)", duration: LIFT_SECONDS, ease: "expo.inOut" }, 0).add(reveal, 0.25);
       }
     };
 
-    // the full LOAD_SECONDS are counted from the moment the clip is actually on screen
+    // the whole intro (wait + lift) is LOAD_SECONDS from first paint, so count from page start, not from playback
     const startClock = () => {
       if (clock !== undefined) return;
-      clock = window.setTimeout(() => exit(false), LOAD_SECONDS * 1000);
+      const wait = Math.max(MIN_SHOW_MS, (LOAD_SECONDS - LIFT_SECONDS) * 1000 - performance.now());
+      clock = window.setTimeout(() => exit(false), wait);
       timers.push(clock);
     };
 
@@ -78,14 +81,12 @@ export default function Loader() {
       /* not seekable yet; it starts at 0 anyway */
     }
     vid.play().catch(() => {});
-    vid.addEventListener("playing", startClock, { once: true });
     vid.addEventListener("error", onError);
     const sources = vid.querySelectorAll("source");
     const lastSource = sources[sources.length - 1];
     lastSource?.addEventListener("error", onError);
 
-    if (!vid.paused && vid.currentTime > 0) startClock(); // already rolling (second Strict Mode pass)
-    timers.push(window.setTimeout(startClock, START_FALLBACK_MS));
+    startClock();
     // the sources may have failed before hydration attached the listeners
     timers.push(
       window.setTimeout(() => {
@@ -95,7 +96,6 @@ export default function Loader() {
 
     return () => {
       timers.forEach((t) => window.clearTimeout(t));
-      vid.removeEventListener("playing", startClock);
       vid.removeEventListener("error", onError);
       lastSource?.removeEventListener("error", onError);
     };
