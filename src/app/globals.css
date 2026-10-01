@@ -114,9 +114,9 @@ body {
 }
 
 /* ---------- hero name: footage inside the letters ---------- */
-/* The clip is a neon glitch on black. The letters sit on a bright bone base and the footage is
-   blended with `difference`: black parts of the clip leave the name fully bright, and each glitch
-   streak flips the colour underneath it, so the name stays bright with colour flashing through. */
+/* The clip is high-contrast black-and-white motion. It plays over a bright bone base, partly
+   transparent and with its blacks lifted, so the name stays bright (darkest areas stay light
+   grey) and the footage reads as texture inside the letters. Raise the opacity for more contrast. */
 .hero-name {
   --name-base: #f2ede4;
   position: relative;
@@ -139,15 +139,15 @@ body {
   inset: 0;
   width: 100%;
   height: 100%;
-  /* fill, not cover: every letter gets the whole frame, not just a strip through the middle */
-  object-fit: fill;
-  mix-blend-mode: difference;
-  filter: brightness(1.2) saturate(1.2);
+  /* cover: the footage fills the whole name box, so every letter has video behind it, undistorted */
+  object-fit: cover;
+  object-position: center;
+  filter: brightness(1.3) contrast(0.75);
   opacity: 0;
   transition: opacity 1.2s ease;
 }
 .hero-name-bg.is-live video {
-  opacity: 1;
+  opacity: 0.62;
 }
 .hero-name-text {
   position: relative;
@@ -167,7 +167,7 @@ body {
 }
 @media (prefers-reduced-motion: reduce) {
   .hero-name-bg { background: var(--name-base); transition: none; }
-  .hero-name-bg video { opacity: 1; transition: none; }
+  .hero-name-bg video { opacity: 0.62; transition: none; }
 }
 
 /* ---------- marquee ---------- */
