@@ -528,15 +528,22 @@ html.nav-light .nav-scrim { border-bottom-color: color-mix(in srgb, #27467a 22%,
   left: 50%;
   top: 50%;
   z-index: 1;
-  /* narrow enough that the mid-left and mid-right cards land beside the glyphs rather
-     than on top of them — losing the B off BUILDING reads as a bug, not as depth */
-  width: min(880px, 78vw);
+  /* As wide as the text and no wider: two fixed lines (see STATEMENT in Aperture.tsx), so
+     the statement's footprint is 7.2 × its font size and nothing else. The mid-left and
+     mid-right cards are placed against that footprint, in the same vw. */
+  width: max-content;
   transform: translate3d(-50%, -50%, 0);
   text-align: center;
 }
 .sp-head .disp {
-  font-size: clamp(34px, 6.6vw, 104px);
+  /* vw so it stays in step with the cards; the vh term stops a wide, short window from
+     blowing the lines up into the cards above and below */
+  font-size: clamp(34px, min(6.4vw, 12.5vh), 104px);
   line-height: 0.86;
+}
+.sp-line {
+  display: block;
+  white-space: nowrap;
 }
 .sp-accent { color: var(--accent); }
 
@@ -549,6 +556,8 @@ html.nav-light .nav-scrim { border-bottom-color: color-mix(in srgb, #27467a 22%,
   vertical-align: bottom;
   margin-right: 0.24em;
 }
+/* the last word on a line carries no gap, or the line is off-centre by half of it */
+.sp-mask:last-child { margin-right: 0; }
 .sp-word {
   display: inline-block;
   will-change: transform;
@@ -603,8 +612,19 @@ html.nav-light .nav-scrim { border-bottom-color: color-mix(in srgb, #27467a 22%,
 .sp-face img {
   object-fit: cover;
   object-position: var(--sp-pos, center);
-  filter: saturate(0.88) brightness(0.8);
+  /* --sp-b is per card: the covers run from near-black to near-white, so one shared dim
+     cannot sit them all at the same weight */
+  filter: saturate(0.88) brightness(var(--sp-b, 0.8));
   transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s ease;
+}
+/* The covers and cards that would otherwise melt into the black get a hairline you can
+   actually see and a faint cool glow, the way the pale ones get a dark edge from their
+   own shadow. */
+.sp-face[data-edge="true"] {
+  border-color: color-mix(in srgb, var(--bone) 24%, transparent);
+  box-shadow:
+    0 34px 70px -24px rgba(0, 0, 0, 0.95),
+    0 0 44px -14px color-mix(in srgb, var(--accent) 24%, transparent);
 }
 /* the label has to sit on something; screenshots are busy right where it lands */
 .sp-face::after {
@@ -624,7 +644,7 @@ a.sp-face:focus-visible {
   outline: none;
 }
 a.sp-face:hover img,
-a.sp-face:focus-visible img { transform: scale(1.06); filter: none; }
+a.sp-face:focus-visible img { transform: scale(1.06); filter: saturate(1) brightness(var(--sp-bh, 1)); }
 
 .sp-go {
   position: absolute;
@@ -647,28 +667,47 @@ a.sp-face:focus-visible img { transform: scale(1.06); filter: none; }
 a.sp-face:hover .sp-go,
 a.sp-face:focus-visible .sp-go { opacity: 1; color: var(--accent); border-color: color-mix(in srgb, var(--accent) 45%, transparent); }
 
-/* spec card — no screenshot, just the fact */
+/* spec card — no screenshot, so it carries its own drawing: a title, a small diagram,
+   and the stack as chips. Reads as a designed panel next to the screenshots, not a hole. */
 .sp-spec {
   position: absolute;
   inset: 0;
-  padding: 0.9rem 0.9rem 2.1rem;
+  padding: 0.8rem 0.85rem 2.15rem;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  background:
-    linear-gradient(to bottom, rgba(237, 232, 224, 0.04), transparent 55%),
-    repeating-linear-gradient(to bottom, transparent 0 13px, rgba(237, 232, 224, 0.03) 13px 14px);
+  gap: 0.35rem;
+  background: linear-gradient(to bottom, rgba(237, 232, 224, 0.07), transparent 60%);
 }
 .sp-spec-title {
-  font-size: clamp(13px, 1.5vw, 26px);
+  font-size: clamp(15px, 1.75vw, 30px);
   line-height: 0.94;
   color: var(--bone);
 }
-.sp-spec-meta {
-  font-size: clamp(6px, 0.6vw, 10px);
-  letter-spacing: 0.1em;
-  color: var(--dim);
-  line-height: 1.6;
+.sp-art {
+  flex: 1 1 0;
+  min-height: 0;
+  width: 100%;
+  color: var(--bone-2);
+  overflow: visible;
+}
+.sp-art-hot { color: var(--accent); stroke: var(--accent); }
+.sp-art-hot-fill { fill: var(--accent); }
+.sp-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.sp-chips li {
+  padding: 0.12rem 0.34rem;
+  border: 1px solid color-mix(in srgb, var(--bone) 22%, transparent);
+  border-radius: 3px;
+  font-size: clamp(7.5px, 0.62vw, 10px);
+  letter-spacing: 0.08em;
+  line-height: 1.3;
+  color: var(--bone-2);
 }
 
 /* the footer strip every card carries, the way the rail panels are labelled */
@@ -707,7 +746,7 @@ a.sp-face:focus-visible .sp-tag { border-color: color-mix(in srgb, var(--accent)
   }
   .sp-card[data-optional="true"] { display: none; }
   .sp-spec-title { font-size: 14px; }
-  .sp-spec-meta { font-size: 7px; }
+  .sp-chips li { font-size: 7px; }
   .sp-tag, .sp-go { font-size: 7px; }
   .sp-head .disp { font-size: clamp(30px, 8.4vw, 60px); }
 }

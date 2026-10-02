@@ -55,8 +55,27 @@ type Card = Placement &
          * that crop eats the first word — those get "left" instead.
          */
         pos?: "left" | "center";
+        /**
+         * The covers range from near-black (Obscura, Udgam) to near-white (SpecForge,
+         * my-tasks), so one shared dim leaves the pale ones shouting and the dark ones
+         * invisible. `lift` is the image brightness that brings each to a similar weight
+         * (below 1 pulls a pale cover down, above 1 pushes a dark one up); `edge` turns on
+         * a brighter hairline and a faint glow for the covers that would otherwise melt
+         * into the page.
+         */
+        lift: number;
+        edge?: boolean;
       }
-    | { kind: "spec"; title: string; meta: string; tag: string; note: string }
+    | {
+        kind: "spec";
+        title: string;
+        /** the stack, as separate chips */
+        chips: string[];
+        /** which little drawing fills the card */
+        motif: "infra" | "motion";
+        tag: string;
+        note: string;
+      }
   );
 
 /**
@@ -79,7 +98,9 @@ const CARDS: Card[] = [
     href: "/work/udgam",
     tag: "01 — Udgam",
     pos: "left",
-    note: "SIH",
+    note: "Modelling",
+    lift: 1.6,
+    edge: true,
     stack: { x: -11.88, y: -10, r: -18 },
     rest: { x: -24, y: -32, r: -1.5, s: 0.9 },
     w: 17,
@@ -92,7 +113,8 @@ const CARDS: Card[] = [
     src: "/work/noise.webp",
     alt: "Noise — an unfiltered posting board",
     tag: "05 — Noise",
-    note: "Posts",
+    note: "Web app",
+    lift: 0.42,
     stack: { x: -2.88, y: -10, r: -2 },
     rest: { x: 4, y: -33, r: 1.2, s: 0.82 },
     w: 22,
@@ -107,7 +129,8 @@ const CARDS: Card[] = [
     alt: "SpecForge — AI-generated product specs",
     href: "/work/specforge",
     tag: "02 — SpecForge",
-    note: "Live",
+    note: "AI SaaS",
+    lift: 0.42,
     stack: { x: 10.12, y: -10, r: 20 },
     rest: { x: 32, y: -29, r: 1.8, s: 0.85 },
     w: 19,
@@ -118,13 +141,14 @@ const CARDS: Card[] = [
   {
     kind: "spec",
     title: "Ship it somewhere real",
-    meta: "AWS · EC2 · ALB · S3 · IAM · DOCKER",
+    chips: ["AWS", "EC2", "ALB", "S3", "IAM", "Docker"],
+    motif: "infra",
     tag: "Infra",
-    note: "Deploys",
+    note: "Skill",
     stack: { x: -19.88, y: 0, r: -4 },
     rest: { x: -35, y: -1, r: -2, s: 0.86 },
     w: 16,
-    h: 26,
+    h: 30,
     z: 5,
     optional: true,
   },
@@ -135,6 +159,7 @@ const CARDS: Card[] = [
     alt: "my-tasks — a serverless task list on AWS",
     tag: "06 — my-tasks",
     note: "Serverless",
+    lift: 0.42,
     stack: { x: 14.12, y: 1, r: 6 },
     rest: { x: 36, y: 5, r: 2, s: 0.84 },
     w: 18,
@@ -150,7 +175,9 @@ const CARDS: Card[] = [
     href: "/work/medora",
     tag: "03 — Medora",
     pos: "left",
-    note: "Case study",
+    note: "Health AI",
+    lift: 1.4,
+    edge: true,
     stack: { x: -9.88, y: 10, r: 6 },
     rest: { x: -25, y: 33, r: -1.8, s: 0.88 },
     w: 21,
@@ -161,13 +188,14 @@ const CARDS: Card[] = [
   {
     kind: "spec",
     title: "Motion that behaves",
-    meta: "GSAP · SCROLLTRIGGER · LENIS · R3F",
+    chips: ["GSAP", "ScrollTrigger", "Lenis", "R3F"],
+    motif: "motion",
     tag: "Front of house",
-    note: "Motion",
+    note: "Skill",
     stack: { x: 4.12, y: 7, r: 3 },
     rest: { x: 2, y: 35, r: 1, s: 0.8 },
     w: 19,
-    h: 24,
+    h: 27,
     z: 8,
     optional: true,
   },
@@ -178,7 +206,9 @@ const CARDS: Card[] = [
     alt: "Obscura",
     href: "/work/obscura",
     tag: "04 — Obscura",
-    note: "Case study",
+    note: "Privacy",
+    lift: 1.9,
+    edge: true,
     stack: { x: 16.12, y: 12, r: -7 },
     rest: { x: 30, y: 33, r: -1.2, s: 0.9 },
     w: 17,
@@ -196,8 +226,66 @@ const DRIFT_Y = 2.2;
 /** Back cards drift least, front cards most, so the ring has depth. */
 const driftDepth = (i: number, n: number) => (n <= 1 ? 1 : 0.55 + (i / (n - 1)) * 0.75);
 
-/** The statement the pile is hiding. One mask per word, so it can rise in pieces. */
-const STATEMENT = ["Building", "systems", "that"] as const;
+/**
+ * The statement the pile is hiding. One mask per word, so it can rise in pieces.
+ *
+ * The two lines are fixed rather than left to wrap. Wrapping depends on the width of the
+ * box, and the box and the cards are sized in different units, so a window a little off
+ * the one this was tuned at tipped the break to "BUILDING SYSTEMS THAT / WORK." — a long
+ * line for the cards to land on and an orphan underneath. Fixed lines make the width of
+ * the statement a pure function of its font size, which is a vw, which is what the cards
+ * are measured in.
+ */
+const STATEMENT = [["Building", "systems"], ["that"]] as const;
+
+/** The little drawings that fill the two text cards, so they read as designed, not empty. */
+function Motif({ kind }: { kind: "infra" | "motion" }) {
+  if (kind === "infra") {
+    // ALB fanning out to two instances, both writing to a bucket — Obscura's shape
+    return (
+      <svg className="sp-art" viewBox="0 0 120 64" fill="none" aria-hidden="true">
+        <g stroke="currentColor" strokeWidth="0.8" strokeLinecap="round" opacity="0.55">
+          <path d="M60 15 V19 M60 19 H26 V27 M60 19 H94 V27" />
+          <path d="M26 41 V47 H60 V51 M94 41 V47 H60" />
+        </g>
+        <g stroke="currentColor" strokeWidth="0.8">
+          <rect x="44" y="3" width="32" height="12" rx="2" className="sp-art-hot" />
+          <rect x="10" y="27" width="32" height="14" rx="2" opacity="0.8" />
+          <rect x="78" y="27" width="32" height="14" rx="2" opacity="0.8" />
+          <rect x="44" y="51" width="32" height="12" rx="2" opacity="0.8" />
+        </g>
+        <g fill="currentColor" fontFamily="var(--font-mono), monospace" fontSize="6.5" textAnchor="middle" letterSpacing="0.6">
+          <text x="60" y="11.4" className="sp-art-hot-fill">ALB</text>
+          <text x="26" y="36.2">EC2</text>
+          <text x="94" y="36.2">EC2</text>
+          <text x="60" y="59.4">S3</text>
+        </g>
+      </svg>
+    );
+  }
+  // an ease-out curve with a point riding it, looping — the thing the card is about
+  const curve = "M6 54 C 22 54, 28 8, 114 8";
+  return (
+    <svg className="sp-art" viewBox="0 0 120 64" fill="none" aria-hidden="true">
+      <g stroke="currentColor" strokeWidth="0.5" opacity="0.28">
+        <path d="M6 8 H114 M6 54 H114 M6 8 V54 M114 8 V54" strokeDasharray="1.5 2.5" />
+      </g>
+      <path d={curve} stroke="currentColor" strokeWidth="1" strokeLinecap="round" opacity="0.7" />
+      <circle r="3" className="sp-art-hot-fill" fill="currentColor">
+        <animateMotion
+          dur="2.8s"
+          repeatCount="indefinite"
+          path={curve}
+          calcMode="spline"
+          keyTimes="0;1"
+          keySplines="0.45 0 0.2 1"
+        />
+      </circle>
+      <circle cx="6" cy="54" r="1.6" fill="currentColor" opacity="0.7" />
+      <circle cx="114" cy="8" r="1.6" fill="currentColor" opacity="0.7" />
+    </svg>
+  );
+}
 
 function Chevron() {
   return (
@@ -426,14 +514,20 @@ export default function Aperture() {
         <div className="sp-layer">
           <div className="sp-head">
             <h2 className="disp text-bone">
-              {STATEMENT.map((w) => (
-                <span key={w} className="sp-mask">
-                  <span className="sp-word">{w}</span>
+              {STATEMENT.map((line, li) => (
+                <span key={li} className="sp-line">
+                  {line.map((w) => (
+                    <span key={w} className="sp-mask">
+                      <span className="sp-word">{w}</span>
+                    </span>
+                  ))}
+                  {li === STATEMENT.length - 1 ? (
+                    <span className="sp-mask">
+                      <span className="sp-word sp-accent">work.</span>
+                    </span>
+                  ) : null}
                 </span>
               ))}
-              <span className="sp-mask">
-                <span className="sp-word sp-accent">work.</span>
-              </span>
             </h2>
           </div>
 
@@ -460,7 +554,12 @@ export default function Aperture() {
                 <>
                   <div className="sp-spec">
                     <p className="sp-spec-title disp-500">{c.title}</p>
-                    <p className="sp-spec-meta mono">{c.meta}</p>
+                    <Motif kind={c.motif} />
+                    <ul className="sp-chips mono">
+                      {c.chips.map((t) => (
+                        <li key={t}>{t}</li>
+                      ))}
+                    </ul>
                   </div>
                   {label}
                 </>
@@ -481,6 +580,9 @@ export default function Aperture() {
                     "--sp-h": c.h,
                     "--sp-z": c.z,
                     "--sp-pos": c.kind === "shot" ? (c.pos ?? "center") : undefined,
+                    "--sp-b": c.kind === "shot" ? c.lift : undefined,
+                    // hover goes to full brightness, but never darker than it already is
+                    "--sp-bh": c.kind === "shot" ? Math.max(1, c.lift) : undefined,
                   } as CSSProperties
                 }
               >
@@ -489,12 +591,17 @@ export default function Aperture() {
                     <a
                       href={c.href}
                       className="sp-face pointer-events-auto"
+                      data-edge={c.edge ? "true" : undefined}
                       aria-label={`${c.tag} — case study`}
                     >
                       {body}
                     </a>
                   ) : (
-                    <div className="sp-face" aria-hidden="true">
+                    <div
+                      className="sp-face"
+                      data-edge={c.kind === "spec" || c.edge ? "true" : undefined}
+                      aria-hidden="true"
+                    >
                       {body}
                     </div>
                   )}
