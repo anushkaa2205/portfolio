@@ -241,6 +241,65 @@ html.nav-light .nav-bar { color: #27467a; }
 html.nav-light .nav-meta { color: #27467a; }
 html.nav-light .nav-scrim { border-bottom-color: color-mix(in srgb, #27467a 22%, transparent); }
 
+/* ---------- scroll to top ---------- */
+/* Square, hairline, icy blue: the same language as the nav and the card tags. It sits
+   under the nav's z-index, over the page, and inverts with the nav on the bone panel. */
+.to-top {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--ink) 75%, transparent);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  color: var(--accent);
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  transform: translate3d(0, 10px, 0);
+  transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), visibility 0s linear 0.3s,
+    background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+}
+.to-top[data-shown="true"] {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition-delay: 0s;
+}
+.to-top svg { transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+.to-top:hover,
+.to-top:focus-visible {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--ink);
+  outline: none;
+}
+.to-top:hover svg,
+.to-top:focus-visible svg { transform: translateY(-2px); }
+html.nav-light .to-top {
+  background: color-mix(in srgb, var(--bone) 78%, transparent);
+  border-color: color-mix(in srgb, #27467a 35%, transparent);
+  color: #27467a;
+}
+html.nav-light .to-top:hover,
+html.nav-light .to-top:focus-visible {
+  background: #27467a;
+  border-color: #27467a;
+  color: var(--bone);
+}
+@media (max-width: 639px) {
+  .to-top { right: 14px; bottom: 14px; width: 40px; height: 40px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .to-top, .to-top svg { transition: none; }
+}
+
 /* surname: solid off-white, bottom-right, away from the name */
 .hero-surname-text { color: var(--bone); line-height: 0.85; }
 

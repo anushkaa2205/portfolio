@@ -118,7 +118,8 @@ export default function Contact() {
         <span>
           © {new Date().getFullYear()} {site.name}
         </span>
-        <span>{site.location}</span>
+        {/* clear of the fixed scroll-to-top button, which sits in the bottom-right corner */}
+        <span className="sm:pr-14">{site.location}</span>
       </div>
     </section>
   );

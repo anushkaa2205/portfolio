@@ -4,6 +4,7 @@ import "./globals.css";
 import { site } from "@/data/site";
 import SmoothScroll from "@/components/SmoothScroll";
 import Nav from "@/components/Nav";
+import ScrollTop from "@/components/ScrollTop";
 import Loader from "@/components/Loader";
 
 // Self-hosted variable fonts (no request to Google at runtime or build time).
@@ -47,6 +48,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <SmoothScroll>
           <Loader />
           <Nav />
+          <ScrollTop />
           {children}
         </SmoothScroll>
       </body>
