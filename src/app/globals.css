@@ -267,9 +267,9 @@ html.nav-light .nav-scrim { border-bottom-color: color-mix(in srgb, #27467a 22%,
 
 /* ---------- tech stack rows (inside the aperture) ---------- */
 /*
-   Three equal-height rows on the bone panel. Hovering one (or focusing it, or tapping it on
+   Four equal-height rows on the bone panel. Hovering one (or focusing it, or tapping it on
    touch) inverts THAT ROW ONLY: a full-bleed black band wipes in, the title fades out, and a
-   one-line marquee of the category floats up in ice. The other two rows are untouched.
+   one-line marquee of the category floats up in ice. The other rows are untouched.
 
    Because the marquee animation only EXISTS while a row is open, leaving the row removes it
    and the track snaps back to its start — that is the reset, with no JS timer involved.
@@ -317,7 +317,9 @@ html.nav-light .nav-scrim { border-bottom-color: color-mix(in srgb, #27467a 22%,
   transition: opacity 0.4s ease, transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .tk-track { display: flex; width: max-content; will-change: transform; }
-.tk-list { display: flex; margin: 0; padding: 0; list-style: none; }
+/* One lap must be at least a screen wide, or the loop shows a gap where the second copy
+   ends. Short lists (Languages, Tools) are spread to fill it; long ones are untouched. */
+.tk-list { display: flex; flex: none; min-width: 100vw; justify-content: space-around; margin: 0; padding: 0; list-style: none; }
 .tk-item {
   font-size: clamp(20px, 3.2vw, 52px);
   white-space: nowrap;

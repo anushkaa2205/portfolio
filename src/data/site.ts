@@ -37,31 +37,33 @@ export const site = {
   /** What you're working on right now (shown in the hero footer and the Now slot). */
   now: "Building SpecForge — AI-generated product specs, with real accounts and credits.",
   /**
-   * The tech stack panel (the aperture reveals it). Three rows; each row shows its list on hover.
+   * The tech stack panel (the aperture reveals it). Four rows; each row shows its list on hover.
    * `lead` is the big word, `tail` is the dimmer rest of the sentence. Only list what you would
    * happily be asked about in an interview.
    */
   techStack: [
     {
+      lead: "Languages",
+      tail: "I write in",
+      items: ["C++", "Java", "Python", "TypeScript", "JavaScript", "SQL"],
+    },
+    {
       lead: "Technologies",
       tail: "I work with",
       items: [
-        "Python", "TypeScript", "React", "Next.js", "Node.js", "Express", "Flask",
-        "Tailwind", "GSAP", "Three.js", "Framer Motion", "NumPy",
+        "HTML", "CSS", "React", "Next.js", "Tailwind CSS", "GSAP", "Three.js", "Framer Motion",
+        "Node.js", "Express.js", "Google OAuth",
       ],
     },
     {
       lead: "Platforms",
       tail: "I build on",
-      items: [
-        "AWS", "EC2", "ALB", "VPC", "S3", "IAM", "Render", "Supabase", "PostgreSQL",
-        "MongoDB", "HYCOM", "Anthropic API", "Gemini", "Groq", "Google OAuth",
-      ],
+      items: ["AWS", "Render", "Supabase", "PostgreSQL", "MongoDB", "Google Earth Engine", "Docker"],
     },
     {
       lead: "Tools",
       tail: "I work with",
-      items: ["Git", "GitHub", "Docker", "Google Earth Engine"],
+      items: ["Git", "GitHub", "Postman", "Figma"],
     },
   ],
 } as const;

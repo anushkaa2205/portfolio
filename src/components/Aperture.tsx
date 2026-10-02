@@ -152,7 +152,7 @@ const CARDS: Card[] = [
     z: 5,
     optional: true,
   },
-  // mid-right
+  // bottom-centre
   {
     kind: "shot",
     src: "/work/mytasks.webp",
@@ -160,8 +160,8 @@ const CARDS: Card[] = [
     tag: "06 — my-tasks",
     note: "Serverless",
     lift: 0.42,
-    stack: { x: 14.12, y: 1, r: 6 },
-    rest: { x: 36, y: 5, r: 2, s: 0.84 },
+    stack: { x: 4.12, y: 7, r: 3 },
+    rest: { x: 2, y: 35, r: 1, s: 0.84 },
     w: 18,
     h: 19,
     z: 6,
@@ -184,7 +184,7 @@ const CARDS: Card[] = [
     h: 22,
     z: 7,
   },
-  // bottom-centre
+  // mid-right
   {
     kind: "spec",
     title: "Motion that behaves",
@@ -192,8 +192,8 @@ const CARDS: Card[] = [
     motif: "motion",
     tag: "Front of house",
     note: "Skill",
-    stack: { x: 4.12, y: 7, r: 3 },
-    rest: { x: 2, y: 35, r: 1, s: 0.8 },
+    stack: { x: 14.12, y: 1, r: 6 },
+    rest: { x: 36, y: 5, r: 2, s: 0.8 },
     w: 19,
     h: 27,
     z: 8,
