@@ -6,6 +6,7 @@ import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { site } from "@/data/site";
+import { visibleProjects } from "@/data/projects";
 import { prefersReducedMotion } from "@/lib/scroll";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -46,8 +47,13 @@ type Card = Placement &
         kind: "shot";
         src: string;
         alt: string;
-        href?: string;
-        tag: string;
+        /**
+         * The slug in projects.ts this card opens. Its number and name on the card come from
+         * there too, so the card, the rail and the viewer can never disagree. Cards without
+         * one are scenery and carry their own `tag`.
+         */
+        project?: string;
+        tag?: string;
         note: string;
         /**
          * The covers are ~1.93:1 and the boxes are ~1.5:1, so `cover` crops about a fifth
@@ -95,8 +101,7 @@ const CARDS: Card[] = [
     kind: "shot",
     src: "/work/udgam.webp",
     alt: "Udgam — satellite drift modelling",
-    href: "/work/udgam",
-    tag: "01 — Udgam",
+    project: "udgam",
     pos: "left",
     note: "Modelling",
     lift: 1.6,
@@ -127,8 +132,7 @@ const CARDS: Card[] = [
     kind: "shot",
     src: "/work/specforge.webp",
     alt: "SpecForge — AI-generated product specs",
-    href: "/work/specforge",
-    tag: "02 — SpecForge",
+    project: "specforge",
     note: "AI SaaS",
     lift: 0.42,
     stack: { x: 10.12, y: -10, r: 20 },
@@ -172,8 +176,7 @@ const CARDS: Card[] = [
     kind: "shot",
     src: "/work/medora.webp",
     alt: "Medora",
-    href: "/work/medora",
-    tag: "03 — Medora",
+    project: "medora",
     pos: "left",
     note: "Health AI",
     lift: 1.4,
@@ -204,8 +207,7 @@ const CARDS: Card[] = [
     kind: "shot",
     src: "/work/obscura.webp",
     alt: "Obscura",
-    href: "/work/obscura",
-    tag: "04 — Obscura",
+    project: "obscura",
     note: "Privacy",
     lift: 1.9,
     edge: true,
@@ -297,6 +299,17 @@ function Chevron() {
 
 export default function Aperture() {
   const root = useRef<HTMLElement>(null);
+  /**
+   * A project card here is a way into the archive below: it asks the archive to show that
+   * project and take the visitor there (see the "archive:select" listener in Archive.tsx).
+   * Without JS it is still a plain link to #work.
+   */
+  const goToProject = (e: React.MouseEvent<HTMLAnchorElement>, slug: string) => {
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+    if (!document.getElementById("work")) return;
+    e.preventDefault();
+    window.dispatchEvent(new CustomEvent("archive:select", { detail: slug }));
+  };
   // Touch only: which row is open. Hover devices are handled entirely in CSS.
   const [open, setOpen] = useState<number | null>(null);
 
@@ -312,7 +325,13 @@ export default function Aperture() {
         gsap.set(".ap-disc", { opacity: 1 });
         gsap.set(".ap-stat", { opacity: 1, y: 0 });
         gsap.set(".sp-word", { yPercent: 0 });
-        document.documentElement.classList.add("nav-light");
+        // only while the bone panel is actually under the nav: the sections either side are dark
+        ScrollTrigger.create({
+          trigger: ".ap-disc",
+          start: "top top+=66",
+          end: "bottom top+=66",
+          onToggle: (self) => document.documentElement.classList.toggle("nav-light", self.isActive),
+        });
         return;
       }
 
@@ -414,8 +433,8 @@ export default function Aperture() {
       tl.to(".ap-disc", { opacity: 1, duration: 0.04, ease: "none" }, 0.68)
         .to(sticky, { "--ap-r": 170, ease: "power2.inOut", duration: 0.3 }, 0.7) // ends 1.000
         .to(".ap-ring", { opacity: 0, duration: 0.16, ease: "power1.in" }, 0.72)
-        // four elements at 0.02 apart, so the tail lands at 1.000 — inside the unit
-        .to(".ap-stat", { opacity: 1, y: 0, stagger: 0.02, duration: 0.18, ease: "expo.out" }, 0.76);
+        // the label and every row share 0.06 of stagger however many rows there are, so the tail lands at 1.000
+        .to(".ap-stat", { opacity: 1, y: 0, stagger: { amount: 0.06 }, duration: 0.18, ease: "expo.out" }, 0.76);
 
       // If this ever prints something other than 1, the fractions above have drifted and
       // every cue is firing at the wrong point in the scroll.
@@ -531,21 +550,30 @@ export default function Aperture() {
             </h2>
           </div>
 
-          {CARDS.map((c, i) => {
+          {CARDS.map((c) => {
+            const pi = c.kind === "shot" && c.project ? visibleProjects.findIndex((p) => p.slug === c.project) : -1;
+            const project = pi >= 0 ? visibleProjects[pi] : null;
+            const num = String(pi + 1).padStart(2, "0");
             const label = (
-              <div className="sp-tag mono">
-                <span>{c.tag}</span>
+              <span className="sp-tag mono">
+                {project ? (
+                  <span>
+                    <span className="sp-num">{num}</span> — {project.title}
+                  </span>
+                ) : (
+                  <span>{c.tag}</span>
+                )}
                 <span>{c.note}</span>
-              </div>
+              </span>
             );
 
             const body: ReactNode =
               c.kind === "shot" ? (
                 <>
                   <Image src={c.src} alt="" fill sizes="(max-width: 767px) 45vw, 22vw" />
-                  {c.href ? (
+                  {project ? (
                     <span className="sp-go mono" aria-hidden="true">
-                      Case study ↗
+                      See details ↓
                     </span>
                   ) : null}
                   {label}
@@ -565,13 +593,11 @@ export default function Aperture() {
                 </>
               );
 
-            // Only the project cards go anywhere. The rest are scenery, and scenery that
+            // Only the project cards open anything. The rest are scenery, and scenery that
             // looks clickable and is not is worse than scenery.
-            const linked = c.kind === "shot" && c.href;
-
             return (
               <div
-                key={c.tag}
+                key={c.kind === "shot" ? c.src : c.tag}
                 className="sp-card"
                 data-optional={c.optional ? "true" : undefined}
                 style={
@@ -579,6 +605,8 @@ export default function Aperture() {
                     "--sp-w": c.w,
                     "--sp-h": c.h,
                     "--sp-z": c.z,
+                    // its rest tilt, so hover can cancel it exactly and square the card up
+                    "--sp-r": c.rest.r,
                     "--sp-pos": c.kind === "shot" ? (c.pos ?? "center") : undefined,
                     "--sp-b": c.kind === "shot" ? c.lift : undefined,
                     // hover goes to full brightness, but never darker than it already is
@@ -587,12 +615,14 @@ export default function Aperture() {
                 }
               >
                 <div className="sp-card-in">
-                  {linked ? (
+                  {project ? (
                     <a
-                      href={c.href}
+                      href="#work"
                       className="sp-face pointer-events-auto"
-                      data-edge={c.edge ? "true" : undefined}
-                      aria-label={`${c.tag} — case study`}
+                      data-edge={c.kind === "shot" && c.edge ? "true" : undefined}
+                      data-project={project.slug}
+                      aria-label={`${project.title}, project ${num} of ${String(visibleProjects.length).padStart(2, "0")} — see details`}
+                      onClick={(e) => goToProject(e, project.slug)}
                     >
                       {body}
                     </a>
