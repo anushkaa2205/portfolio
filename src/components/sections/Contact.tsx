@@ -75,7 +75,7 @@ export default function Contact() {
       data-eclipse='{"x":0.9,"y":0.3,"r":0.06,"phase":1.45,"o":1,"m":{"x":0.86,"y":0.46,"r":0.05}}'
     >
       <div className="mono ct-in flex items-center justify-between">
-        <span className="text-accent">05 — Contact</span>
+        <span className="text-accent">06 — Contact</span>
       </div>
 
       <div className="relative flex-1">

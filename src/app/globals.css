@@ -1286,3 +1286,226 @@ a.sp-face[data-project] { cursor: pointer; }
   .sp-hint svg { animation: none; }
 }
 .ar-panel:focus { outline: none; }
+
+/* ---------- about: the curiosity archive ---------- */
+/*
+   An editorial portrait in type and rules. Desktop: three columns — the opening statement
+   held still on the left, the story reading down the middle in four short parts, a narrow
+   numbered index on the right — then a quiet closing strip. Tablet: the statement on top,
+   story and index side by side. Phone: one column, the index as a compact bar under the nav.
+*/
+.ab { position: relative; padding: 112px 20px 56px; background: var(--ink); color: var(--bone); }
+.ab-head { position: relative; display: flex; justify-content: space-between; gap: 1rem; padding-bottom: 16px; }
+.ab-rule-h { position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: var(--line); transform-origin: left center; }
+.ab-rule-v { display: none; position: absolute; left: 0; top: 0; bottom: 0; width: 1px; background: var(--line); transform-origin: top center; }
+
+.ab-grid { display: flex; flex-direction: column; }
+.ab-lead { order: 1; display: flex; flex-direction: column; align-items: flex-start; padding-top: 40px; }
+.ab-index { order: 2; }
+.ab-story { order: 3; position: relative; }
+
+/* the opening statement */
+.ab-headline { font-size: clamp(52px, 15vw, 96px); line-height: 0.84; color: var(--bone); }
+.ab-line { display: block; overflow: hidden; padding-bottom: 0.03em; white-space: nowrap; }
+.ab-line > span { display: block; will-change: transform; }
+
+/* the annotation, held in a pair of thin brackets */
+.ab-annot {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 28px;
+  padding: 10px 18px;
+  color: var(--bone-2);
+}
+.ab-annot::before,
+.ab-annot::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 8px;
+  border: 1px solid color-mix(in srgb, var(--bone) 35%, transparent);
+}
+.ab-annot::before { left: 0; border-right: 0; }
+.ab-annot::after { right: 0; border-left: 0; }
+
+/* the small typographic fragment */
+.ab-fragment { display: flex; flex-direction: column; gap: 4px; font-size: 10px; letter-spacing: 0.18em; color: var(--dim); }
+.ab-fragment-lead { display: none; }
+.ab-fragment-end { margin-top: 64px; }
+
+/* the index — on phones, a compact bar under the nav */
+.ab-index {
+  position: sticky;
+  top: 66px;
+  z-index: 6;
+  margin: 36px -20px 0;
+  padding: 6px 20px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background: color-mix(in srgb, var(--ink) 94%, transparent);
+}
+.ab-index ol { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; margin: 0; padding: 0; list-style: none; }
+.ab-index-link {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px 4px 6px 12px;
+  font-size: 10px;
+  line-height: 1.3;
+  color: var(--dim);
+  transition: color 0.35s ease;
+}
+.ab-index-dash { display: none; }
+.ab-dot {
+  position: absolute;
+  left: 2px;
+  top: 10px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0;
+  transform: scale(0.4);
+  transition: opacity 0.35s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.ab-index-link[aria-current] { color: var(--bone); }
+.ab-index-link[aria-current] .ab-index-num { color: var(--accent); }
+.ab-index-link[aria-current] .ab-dot { opacity: 1; transform: none; }
+.ab-index-link:hover { color: var(--bone-2); }
+.ab-index-link:focus-visible { outline: 1px solid var(--accent); outline-offset: 2px; }
+
+/* the subsections */
+.ab-sub { padding-top: 64px; scroll-margin-top: 66px; outline: none; }
+.ab-sublabel { margin-bottom: 22px; font-weight: 400; color: var(--dim); }
+.ab-opening {
+  max-width: 19em;
+  font-size: clamp(24px, 2.3vw, 34px);
+  line-height: 1.22;
+  letter-spacing: -0.01em;
+  color: var(--bone);
+}
+.ab-intro { max-width: 30em; margin-top: 22px; font-size: 17px; line-height: 1.6; color: var(--bone-2); }
+.ab-exploring { display: flex; flex-direction: column; gap: 12px; margin-top: 34px; }
+.ab-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.ab-tags li { padding: 7px 10px; border: 1px solid color-mix(in srgb, var(--bone) 22%, transparent); font-size: 10px; color: var(--bone-2); }
+
+/* 02 — compact rows: large number, bold short label, smaller text */
+.ab-rows { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--line); }
+.ab-row {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr);
+  grid-template-areas: "num label" "num text";
+  align-items: baseline;
+  column-gap: 18px;
+  row-gap: 6px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--line);
+}
+.ab-row-num { grid-area: num; font-size: 46px; line-height: 0.8; color: var(--off); transition: color 0.4s ease; }
+.ab-row-label { grid-area: label; font-size: 26px; line-height: 1; color: var(--bone); }
+.ab-row-text { grid-area: text; font-size: 15px; line-height: 1.55; color: var(--bone-2); }
+.ab-row:hover .ab-row-num { color: var(--accent); }
+
+/* 03 — principles: an oversized outline numeral, a short heading, a readable line */
+.ab-values { margin: 0; padding: 0; list-style: none; }
+.ab-value {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  column-gap: 24px;
+  padding: 30px 0 32px;
+  border-top: 1px solid var(--line);
+}
+.ab-value:last-child { border-bottom: 1px solid var(--line); }
+.ab-value-num {
+  font-size: clamp(72px, 7vw, 120px);
+  line-height: 0.78;
+  color: transparent;
+  -webkit-text-stroke: 1px color-mix(in srgb, var(--bone) 32%, transparent);
+}
+.ab-value-title { font-size: clamp(24px, 2.2vw, 34px); line-height: 0.98; color: var(--bone); }
+.ab-value-text { max-width: 28em; margin-top: 12px; font-size: 16px; line-height: 1.55; color: var(--bone-2); }
+
+/* 04 — lighter: one statement, a line, a little sequence */
+.ab-statement { max-width: 11em; font-size: clamp(38px, 4vw, 64px); line-height: 0.92; color: var(--bone); }
+.ab-seq { display: flex; flex-wrap: wrap; gap: 8px 0; margin-top: 30px; color: var(--bone-2); }
+.ab-seq i { margin: 0 0.9em; font-style: normal; color: var(--accent); }
+
+/* the closing signature, kept quiet */
+.ab-strip {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 72px 0 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--line);
+}
+.ab-strip li { display: flex; align-items: baseline; gap: 12px; padding: 18px 0; border-bottom: 1px solid var(--line); }
+.ab-strip-word { font-size: 20px; color: var(--bone-2); }
+
+/* tablet: the statement on top, story and index side by side */
+@media (min-width: 700px) {
+  .ab { padding: 120px 40px 64px; }
+  .ab-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 190px;
+    grid-template-areas: "lead lead" "story index";
+    column-gap: 48px;
+  }
+  .ab-lead { grid-area: lead; }
+  .ab-story { grid-area: story; }
+  .ab-index {
+    grid-area: index;
+    position: sticky;
+    top: 120px;
+    align-self: start;
+    margin: 64px 0 0;
+    padding: 4px 0 4px 24px;
+    border: 0;
+    background: none;
+  }
+  .ab-rule-index { display: block; }
+  .ab-sub { scroll-margin-top: 40px; }
+  .ab-index ol { display: flex; flex-direction: column; gap: 14px; }
+  .ab-index-link { flex-direction: row; gap: 8px; padding: 2px 0 2px 14px; font-size: 11px; }
+  .ab-index-dash { display: inline; color: var(--off); }
+  .ab-dot { left: 0; top: 50%; margin-top: -2.5px; }
+  .ab-headline { font-size: clamp(64px, 10vw, 112px); }
+  .ab-row { grid-template-columns: 84px 150px minmax(0, 1fr); grid-template-areas: "num label text"; }
+  .ab-row-num { font-size: 56px; }
+  .ab-strip { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .ab-strip li { padding: 22px 20px; border-bottom: 0; border-left: 1px solid var(--line); }
+  .ab-strip li:first-child { padding-left: 0; border-left: 0; }
+}
+
+/* desktop: three columns, the statement held still as the anchor */
+@media (min-width: 1100px) {
+  .ab-grid {
+    grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr) 210px;
+    grid-template-areas: "lead story index";
+    column-gap: 0;
+  }
+  .ab-lead {
+    position: sticky;
+    top: 120px;
+    align-self: start;
+    min-height: calc(100svh - 176px);
+    padding: 64px 48px 0 0;
+  }
+  .ab-headline { font-size: clamp(64px, min(6.4vw, 13vh), 132px); }
+  .ab-fragment-lead { display: flex; margin-top: auto; }
+  .ab-fragment-end { display: none; }
+  .ab-story { padding-left: clamp(40px, 3.6vw, 64px); padding-right: clamp(32px, 3vw, 56px); }
+  .ab-rule-story { display: block; }
+  .ab-index { margin-top: 64px; }
+  .ab-row { grid-template-columns: 64px minmax(0, 1fr); grid-template-areas: "num label" "num text"; }
+  .ab-row-num { font-size: 46px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ab-dot, .ab-index-link, .ab-row-num { transition: none; }
+}
