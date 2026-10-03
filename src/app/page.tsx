@@ -9,7 +9,7 @@ import VeilRemover from "@/components/VeilRemover";
 
 export default function Home() {
   return (
-    <main>
+    <main id="main">
       <VeilRemover />
       <Hero />
       <Aperture />

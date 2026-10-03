@@ -1509,3 +1509,105 @@ a.sp-face[data-project] { cursor: pointer; }
 @media (prefers-reduced-motion: reduce) {
   .ab-dot, .ab-index-link, .ab-row-num { transition: none; }
 }
+
+/* ---------- the scrollbar ---------- */
+/* The native bar is hidden everywhere (the page still scrolls natively — only the drawing
+   is replaced) and a thin outlined pill with an ice-blue dot reads the scroll position
+   instead. See Scrollbar.tsx. Inner scroll areas keep their own bars. */
+html { scrollbar-width: none; -ms-overflow-style: none; }
+html::-webkit-scrollbar,
+body::-webkit-scrollbar { display: none; width: 0; height: 0; }
+
+.sb {
+  position: fixed;
+  right: 3px;
+  top: 84px;
+  bottom: 104px;
+  z-index: 35;
+  width: 20px;
+  cursor: pointer;
+  opacity: 0.35;
+  outline: none;
+  transition: opacity 0.6s ease;
+}
+.sb[data-awake],
+.sb[data-dragging],
+.sb:hover,
+.sb:focus-visible { opacity: 1; transition-duration: 0.25s; }
+
+/* the pill: thin, tall, a fine white outline */
+.sb-pill {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 10px;
+  margin-left: -5px;
+  border: 1px solid color-mix(in srgb, #fff 24%, transparent);
+  border-radius: 999px;
+  transition: border-color 0.3s ease;
+}
+.sb:hover .sb-pill,
+.sb[data-dragging] .sb-pill,
+.sb:focus-visible .sb-pill { border-color: color-mix(in srgb, #fff 58%, transparent); }
+.sb:focus-visible .sb-pill { box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 45%, transparent); }
+
+/* the dot: positioned by JS (transform), drawn by its child so hover can scale it */
+.sb-thumb {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 6px;
+  height: 6px;
+  cursor: grab;
+  will-change: transform;
+  touch-action: none;
+}
+/* a bigger, invisible grip than the dot itself */
+.sb-thumb::before { content: ""; position: absolute; inset: -9px; }
+.sb-dot {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: var(--accent);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.3s ease;
+}
+.sb:hover .sb-dot,
+.sb[data-dragging] .sb-dot { transform: scale(1.5); }
+.sb[data-dragging] .sb-thumb { cursor: grabbing; }
+html.sb-dragging, html.sb-dragging * { cursor: grabbing !important; user-select: none !important; }
+
+/* the percentage, small, under the pill */
+.sb-label {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  margin-top: 8px;
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  color: var(--bone-2);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+.sb[data-awake] .sb-label,
+.sb[data-dragging] .sb-label,
+.sb:hover .sb-label,
+.sb:focus-visible .sb-label { opacity: 1; }
+
+/* over the bone tech-stack panel the white and ice would vanish: ink and deep blue there */
+html.nav-light .sb-pill { border-color: color-mix(in srgb, var(--ink) 28%, transparent); }
+html.nav-light .sb:hover .sb-pill,
+html.nav-light .sb[data-dragging] .sb-pill { border-color: color-mix(in srgb, var(--ink) 55%, transparent); }
+html.nav-light .sb-dot { background: #27467a; }
+html.nav-light .sb-label { color: color-mix(in srgb, var(--ink) 60%, transparent); }
+
+/* touch: an indicator only, so it never catches a swipe */
+@media (hover: none), (pointer: coarse) {
+  .sb { pointer-events: none; right: 2px; bottom: 96px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sb, .sb-pill, .sb-dot, .sb-label { transition: none; }
+}
