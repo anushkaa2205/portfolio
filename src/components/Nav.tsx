@@ -8,6 +8,7 @@ import { useLenis } from "./SmoothScroll";
 const items = [
   { label: "Tech stack", href: "#index" },
   { label: "Work", href: "#work" },
+  { label: "About", href: "#about" },
   { label: "Philosophy", href: "#philosophy" },
   { label: "Contact", href: "#contact" },
 ];
@@ -44,7 +45,7 @@ export default function Nav() {
         <Link href="/" className="link-line">
           {site.name}
         </Link>
-        <ul className="hidden gap-10 sm:flex">
+        <ul className="hidden gap-6 sm:flex lg:gap-10">
           {items.map((it) => (
             <li key={it.href}>
               <a href={home ? it.href : `/${it.href}`} onClick={(e) => go(e, it.href)} className="link-line">
@@ -53,7 +54,7 @@ export default function Nav() {
             </li>
           ))}
         </ul>
-        <span className="nav-meta hidden text-dim md:inline">{site.availability}</span>
+        <span className="nav-meta hidden text-dim lg:inline">{site.availability}</span>
         <a href={home ? "#contact" : "/#contact"} onClick={(e) => go(e, "#contact")} className="link-line sm:hidden">
           Contact
         </a>

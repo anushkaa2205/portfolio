@@ -75,7 +75,7 @@ export default function Philosophy() {
       <div className="sticky top-0 flex h-svh flex-col justify-center px-5 py-28 sm:px-10">
       <div className="grid gap-10 md:grid-cols-[220px_1fr_220px]">
         <div className="mono flex flex-col gap-3">
-          <span className="text-accent">03 — Philosophy</span>
+          <span className="text-accent">04 — Philosophy</span>
         </div>
 
         <div className="ph-text disp-500 text-bone" style={{ fontSize: "clamp(28px, 3.6vw, 56px)", lineHeight: 1.15 }}>

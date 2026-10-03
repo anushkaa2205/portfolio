@@ -34,7 +34,7 @@ export default function BeyondCode() {
       data-eclipse='{"x":0.9,"y":0.3,"r":0.06,"phase":1.3,"o":0}'
     >
       <div className="grid gap-6 sm:grid-cols-[220px_1fr]">
-        <span className="mono bc-in text-accent">04 — Beyond code</span>
+        <span className="mono bc-in text-accent">05 — Beyond code</span>
         <p className="disp-500 bc-in text-bone" style={{ fontSize: "clamp(28px, 4vw, 48px)" }}>
           {site.beyondCode}
         </p>
