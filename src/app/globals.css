@@ -436,14 +436,25 @@ html.nav-light .to-top:focus-visible {
 }
 
 /* ---------- project rail ---------- */
-/* Mobile first: a plain vertical stack, nothing pinned, everything already visible. */
+/*
+   One card per project: warm bone cards on the dark page, like printed sheets laid on a
+   desk. Each card is the whole story: screenshot, title, what it does, the problem, the role, the stack and both
+   links. Nothing opens; the card is the detail.
+
+   Ink type, full-colour screenshots, hairline borders, and the nav's deep blue (#27467a)
+   for small accents, with the pale blue as a wash on the stack chips.
+
+   Mobile and tablet first: a plain vertical stack of cards, nothing pinned. The horizontal
+   rail only starts at 1100px, where a card has room to be one screen.
+*/
 .rail-stage { height: auto; }
 .rail-sticky { position: static; height: auto; }
 .rail-track { display: flex; flex-direction: column; }
-.rail-panel { width: 100%; padding-top: 14vh; padding-bottom: 14vh; }
+.rail-panel { width: 100%; padding-top: 3vh; padding-bottom: 3vh; }
+.rail-panel:last-child { padding-bottom: 8vh; }
 
 .rail-title { position: relative; display: block; line-height: 0.82; }
-.rail-title .mask { display: block; overflow: hidden; }
+.rail-title .mask { display: block; overflow: hidden; padding-bottom: 0.04em; }
 .rail-ghost {
   position: absolute;
   left: 0;
@@ -451,37 +462,166 @@ html.nav-light .to-top:focus-visible {
   display: block;
   line-height: 0.82;
   color: transparent;
-  -webkit-text-stroke: 1px var(--off);
+  -webkit-text-stroke: 1px color-mix(in srgb, var(--ink) 22%, transparent);
   pointer-events: none;
   transform: translate3d(0.05em, 0.13em, 0);
 }
 .rail-bar { transform: scaleX(0); will-change: transform; }
 
-/* project shot: a screenshot panel that fades into the page on its left edge, so the
-   title can sit over it without fighting the pixels. */
-.rail-shot {
+.wk-blue { color: #27467a; }
+.wk-head { padding-bottom: 6px; }
+
+.wk-wrap { align-items: stretch; }
+.wk-card {
   position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 16px;
+  border: 1px solid color-mix(in srgb, var(--bone) 40%, transparent);
+  background: #f3eee6;
+  color: var(--ink);
+  box-shadow: 0 40px 80px -36px rgba(0, 0, 0, 0.9), 0 0 60px -30px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+.wk-strip {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+.wk-rule { flex: 1 1 auto; height: 1px; background: color-mix(in srgb, var(--ink) 14%, transparent); }
+.wk-status { display: inline-flex; align-items: center; gap: 0.5rem; color: #27467a; }
+.wk-dot {
+  position: relative;
+  display: inline-block;
+  width: 8px;
+  height: 8px;
   overflow: hidden;
-  background: #0b0b0b;
+  border: 1px solid #27467a;
+  border-radius: 50%;
+}
+.wk-dot-live { background: #27467a; }
+.wk-dot-in-progress::after { content: ""; position: absolute; inset: 0; left: 50%; background: #27467a; }
+
+.wk-body { display: grid; gap: 22px; margin-top: 16px; }
+.wk-figure { margin: 0; min-width: 0; }
+.wk-shot {
+  position: relative;
+  width: 100%;
+  /* the covers are all ~1.93:1, so the frame is too: nothing gets cropped */
+  aspect-ratio: 1400 / 725;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--ink) 16%, transparent);
+  background: #e4ded4;
 }
 .rail-shot-img {
   object-fit: cover;
-  object-position: left top;
-  filter: saturate(0.9) brightness(0.82);
-  transform: scale(1.04);
-  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), filter 0.6s ease;
+  object-position: center top;
+  transform: scale(1.03);
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.rail-hit:hover .rail-shot-img { filter: none; transform: scale(1); }
-.rail-cta { --tw-ring-color: transparent; }
+.wk-card:hover .rail-shot-img { transform: scale(1); }
+.wk-caption {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-top: 10px;
+  color: color-mix(in srgb, var(--ink) 62%, transparent);
+}
+.wk-host {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-transform: none;
+  letter-spacing: 0.04em;
+}
 
+.wk-info { display: flex; flex-direction: column; min-width: 0; container-type: inline-size; }
+.wk-title { font-size: clamp(52px, 17cqi, 132px); color: var(--ink); }
+.wk-summary {
+  margin-top: 18px;
+  max-width: 34em;
+  font-size: clamp(16px, 1.2vw, 19px);
+  line-height: 1.5;
+  color: color-mix(in srgb, var(--ink) 90%, transparent);
+}
+.wk-problem { display: flex; flex-direction: column; gap: 0.45rem; margin-top: 14px; max-width: 38em; }
+.wk-problem p { font-size: 14px; line-height: 1.6; color: color-mix(in srgb, var(--ink) 66%, transparent); }
 
-@media (min-width: 768px) {
+.wk-meta { margin: 14px 0 0; padding-top: 12px; border-top: 1px solid color-mix(in srgb, var(--ink) 12%, transparent); }
+.wk-meta dt { margin-bottom: 0.3rem; color: color-mix(in srgb, var(--ink) 45%, transparent); }
+.wk-meta dd {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: color-mix(in srgb, var(--ink) 78%, transparent);
+}
+
+.wk-stack { display: flex; flex-wrap: wrap; gap: 6px; margin: 14px 0 0; padding: 0; list-style: none; }
+.wk-stack li {
+  padding: 0.3rem 0.55rem;
+  border: 1px solid color-mix(in srgb, #27467a 20%, transparent);
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--accent) 60%, transparent);
+  font-size: 10px;
+  color: #27467a;
+}
+
+.wk-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+.wk-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  min-height: 46px;
+  padding: 0 1.3rem;
+  border: 1px solid var(--ink);
+  transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+}
+.wk-btn > span[aria-hidden] { transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+.wk-btn:hover > span[aria-hidden],
+.wk-btn:focus-visible > span[aria-hidden] { transform: translate(2px, -2px); }
+.wk-btn:focus-visible { outline: 1px solid #27467a; outline-offset: 3px; }
+.wk-btn-solid { background: var(--ink); color: var(--bone); }
+.wk-btn-solid:hover,
+.wk-btn-solid:focus-visible { background: #27467a; border-color: #27467a; }
+.wk-btn-line { color: var(--ink); }
+.wk-btn-line:hover,
+.wk-btn-line:focus-visible { background: var(--ink); color: var(--bone); }
+.wk-btn-off {
+  border-style: dashed;
+  border-color: color-mix(in srgb, var(--ink) 25%, transparent);
+  color: color-mix(in srgb, var(--ink) 45%, transparent);
+  cursor: not-allowed;
+}
+
+@media (min-width: 640px) {
+  .wk-card { padding: 22px 24px 24px; }
+}
+
+@media (min-width: 1100px) {
   .rail-stage { height: var(--rail-h); }
   .rail-sticky { position: sticky; top: 0; height: 100svh; }
-  .rail-track { flex-direction: row; flex: 1 1 auto; will-change: transform; }
+  .rail-track { flex-direction: row; flex: 1 1 auto; min-height: 0; will-change: transform; }
   .rail-panel { width: 100vw; flex: 0 0 100vw; padding-top: 0; padding-bottom: 0; }
+  .rail-panel:last-child { padding-bottom: 0; }
 
-  /* Inactive panels hold their reveal; [data-active] flips one panel at a time. */
+  /* one card per screen, centred in the space between the label and the progress line */
+  .wk-wrap { align-items: center; padding-top: 10px; padding-bottom: 16px; }
+  .wk-card { max-height: 100%; padding: 22px 28px 26px; }
+  .wk-body {
+    grid-template-columns: minmax(0, 57fr) minmax(0, 43fr);
+    align-items: center;
+    gap: clamp(28px, 3.6vw, 64px);
+    margin-top: 18px;
+  }
+  /* sized by the height too, so a short wide window shrinks the picture, not the words */
+  .wk-shot { width: min(100%, calc((100svh - 300px) * 1.93)); }
+
+  /* Inactive cards hold their reveal; [data-active] flips one card at a time. */
   .rail-solid {
     display: block;
     transform: translate3d(0, 110%, 0);
@@ -495,39 +635,27 @@ html.nav-light .to-top:focus-visible {
   }
   .rail-fade {
     opacity: 0;
-    transform: translate3d(0, 28px, 0);
+    transform: translate3d(0, 22px, 0);
     transition: opacity 0.9s ease 0.12s, transform 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.12s;
   }
+  .wk-info .rail-fade:nth-child(3) { transition-delay: 0.18s; }
+  .wk-info .rail-fade:nth-child(4) { transition-delay: 0.24s; }
+  .wk-info .rail-fade:nth-child(5) { transition-delay: 0.3s; }
+  .wk-info .rail-fade:nth-child(6) { transition-delay: 0.36s; }
   .rail-panel[data-active="true"] .rail-solid { transform: translate3d(0, 0, 0); }
   .rail-panel[data-active="true"] .rail-ghost { opacity: 1; transform: translate3d(0.05em, 0.13em, 0); }
   .rail-panel[data-active="true"] .rail-fade { opacity: 1; transform: none; }
 
-  /* the shot fades out on its left so the title can sit over it, and bleeds off the right edge */
+  /* the screenshot is unmasked from the left as its card arrives */
   .rail-shot {
-    -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 16%);
-    mask-image: linear-gradient(to right, transparent 0%, #000 16%);
-    margin-right: calc(-1 * ((100vw - min(1320px, 100vw)) / 2 + 40px));
-  }
-  /* a scrim over the left of the shot, so the title stays readable on light screenshots */
-  .rail-shot::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    pointer-events: none;
-    background: linear-gradient(to right, rgba(7, 7, 7, 0.94) 0%, rgba(7, 7, 7, 0.6) 20%, rgba(7, 7, 7, 0) 46%);
-  }
-
-  /* the shot wipes in from the left with the rest of the panel */
-  .rail-shot {
-    clip-path: inset(0 0 0 12%);
+    clip-path: inset(0 0 0 14%);
     opacity: 0;
     transition: clip-path 1.15s cubic-bezier(0.16, 1, 0.3, 1) 0.1s, opacity 0.8s ease 0.1s;
   }
   .rail-panel[data-active="true"] .rail-shot { clip-path: inset(0 0 0 0); opacity: 1; }
   .rail-shot-img { transform: scale(1.08); }
   .rail-panel[data-active="true"] .rail-shot-img { transform: scale(1.02); }
-  .rail-hit:hover .rail-shot-img { transform: scale(1); }
+  .rail-panel[data-active="true"] .wk-card:hover .rail-shot-img { transform: scale(1); }
 
   /* the next project, whispered at the right edge */
   .rail-next {
@@ -539,9 +667,24 @@ html.nav-light .to-top:focus-visible {
     opacity: 0;
     letter-spacing: 0.16em;
     font-size: 11px;
+    color: var(--bone-2);
     transition: opacity 0.9s ease 0.35s;
   }
-  .rail-panel[data-active="true"] .rail-next { opacity: 0.45; }
+  .rail-panel[data-active="true"] .rail-next { opacity: 0.5; }
+}
+/* shorter laptop screens: the problem paragraph gives way before anything overflows */
+@media (min-width: 1100px) and (max-height: 860px) {
+  .wk-head { padding-top: 84px; }
+  .wk-problem p { display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .wk-summary { margin-top: 14px; }
+  .wk-problem, .wk-meta, .wk-stack { margin-top: 12px; }
+  .wk-actions { margin-top: 16px; }
+  .wk-card { padding: 18px 24px 20px; }
+  .wk-body { margin-top: 14px; }
+}
+@media (min-width: 1100px) and (max-height: 740px) {
+  .wk-problem { display: none; }
+  .wk-title { font-size: clamp(48px, 15cqi, 110px); }
 }
 
 /* ---------- reduced motion: render the final state, move nothing ---------- */
@@ -554,7 +697,7 @@ html.nav-light .to-top:focus-visible {
   .rail-stage { height: auto; }
   .rail-sticky { position: static; height: auto; }
   .rail-track { flex-direction: column; }
-  .rail-panel { width: 100%; flex: 0 0 auto; padding-top: 14vh; padding-bottom: 14vh; }
+  .rail-panel { width: 100%; flex: 0 0 auto; padding-top: 3vh; padding-bottom: 3vh; }
   .rail-solid { transform: none; transition: none; }
   .rail-ghost { opacity: 1; transform: translate3d(0.05em, 0.13em, 0); transition: none; }
   .rail-fade { opacity: 1; transform: none; transition: none; }
@@ -668,14 +811,14 @@ html.nav-light .to-top:focus-visible {
   border-radius: 8px;
   background: var(--ink-2);
   box-shadow: 0 34px 70px -24px rgba(0, 0, 0, 0.95);
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .sp-face img {
   object-fit: cover;
   object-position: var(--sp-pos, center);
   /* --sp-b is per card: the covers run from near-black to near-white, so one shared dim
      cannot sit them all at the same weight */
-  filter: saturate(0.88) brightness(var(--sp-b, 0.8));
+  filter: saturate(0.88) brightness(var(--sp-b, 0.8)) contrast(1);
   transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s ease;
 }
 /* The covers and cards that would otherwise melt into the black get a hairline you can
@@ -696,16 +839,31 @@ html.nav-light .to-top:focus-visible {
   background: linear-gradient(to top, rgba(7, 7, 7, 0.9) 0%, rgba(7, 7, 7, 0.1) 38%, transparent 70%);
 }
 
-/* only the four cards that lead somewhere are links, so only those light up */
-a.sp-face { cursor: pointer; }
-a.sp-face:hover,
-a.sp-face:focus-visible {
+/* Only the cards that open a project are buttons, so only those light up. Hovering one
+   squares it up (it cancels its own rest tilt, --sp-r), lifts it a touch, and brings the
+   picture to full clarity — the card asking to be picked up, nothing louder. */
+a.sp-face[data-project] { cursor: pointer; }
+.sp-card:has(.sp-face[data-project]:hover),
+.sp-card:has(.sp-face[data-project]:focus-visible) { z-index: 20; }
+.sp-face[data-project]:focus-visible { transform: rotate(calc(var(--sp-r, 0) * -1deg)) scale(1.05); }
+@media (hover: hover) {
+  .sp-face[data-project]:hover { transform: rotate(calc(var(--sp-r, 0) * -1deg)) scale(1.05); }
+}
+.sp-face[data-project]:hover,
+.sp-face[data-project]:focus-visible {
   border-color: var(--accent);
-  box-shadow: 0 34px 70px -24px rgba(0, 0, 0, 0.95), 0 0 26px -4px color-mix(in srgb, var(--accent) 45%, transparent);
+  box-shadow: 0 40px 80px -24px rgba(0, 0, 0, 0.95), 0 0 26px -4px color-mix(in srgb, var(--accent) 45%, transparent);
   outline: none;
 }
-a.sp-face:hover img,
-a.sp-face:focus-visible img { transform: scale(1.06); filter: saturate(1) brightness(var(--sp-bh, 1)); }
+.sp-face[data-project]:hover img,
+.sp-face[data-project]:focus-visible img {
+  transform: scale(1.03);
+  filter: saturate(1) brightness(var(--sp-bh, 1)) contrast(1.08);
+}
+/* the darkening at the foot of the card eases off, so more of the screenshot shows */
+.sp-face::after { transition: opacity 0.4s ease; }
+.sp-face[data-project]:hover::after,
+.sp-face[data-project]:focus-visible::after { opacity: 0.55; }
 
 .sp-go {
   position: absolute;
@@ -725,8 +883,8 @@ a.sp-face:focus-visible img { transform: scale(1.06); filter: saturate(1) bright
   opacity: 0;
   transition: opacity 0.22s ease, color 0.22s ease, border-color 0.22s ease;
 }
-a.sp-face:hover .sp-go,
-a.sp-face:focus-visible .sp-go { opacity: 1; color: var(--accent); border-color: color-mix(in srgb, var(--accent) 45%, transparent); }
+.sp-face[data-project]:hover .sp-go,
+.sp-face[data-project]:focus-visible .sp-go { opacity: 1; color: var(--accent); border-color: color-mix(in srgb, var(--accent) 45%, transparent); }
 
 /* spec card — no screenshot, so it carries its own drawing: a title, a small diagram,
    and the stack as chips. Reads as a designed panel next to the screenshots, not a hole. */
@@ -793,10 +951,17 @@ a.sp-face:focus-visible .sp-go { opacity: 1; color: var(--accent); border-color:
   overflow: hidden;
   transition: border-color 0.3s ease, color 0.3s ease;
 }
-.sp-tag span:first-child { overflow: hidden; text-overflow: ellipsis; }
-.sp-tag span:last-child { color: var(--accent); flex: none; }
-a.sp-face:hover .sp-tag,
-a.sp-face:focus-visible .sp-tag { border-color: color-mix(in srgb, var(--accent) 40%, transparent); color: var(--bone); }
+.sp-tag > span:first-child { overflow: hidden; text-overflow: ellipsis; }
+.sp-tag > span:last-child { color: var(--accent); flex: none; }
+.sp-num { transition: color 0.3s ease; }
+.sp-face[data-project]:hover .sp-tag,
+.sp-face[data-project]:focus-visible .sp-tag { border-color: color-mix(in srgb, var(--accent) 40%, transparent); color: var(--bone); }
+/* the number is what gets emphasised: it goes to the accent, the category chip inverts */
+.sp-face[data-project]:hover .sp-num,
+.sp-face[data-project]:focus-visible .sp-num { color: var(--accent); }
+.sp-tag > span:last-child { padding: 0 0.3rem; margin-right: -0.3rem; border-radius: 2px; transition: background-color 0.3s ease, color 0.3s ease; }
+.sp-face[data-project]:hover .sp-tag > span:last-child,
+.sp-face[data-project]:focus-visible .sp-tag > span:last-child { background: var(--accent); color: var(--ink); }
 
 /* Phones: fewer cards, and the ones that stay get one fixed size, because 18vw of a
    390px screen is a postage stamp and eight of them is soup. */
@@ -844,3 +1009,4 @@ a.sp-face:focus-visible .sp-tag { border-color: color-mix(in srgb, var(--accent)
   .sp-face img, .sp-face, .sp-go, .sp-tag { transition: none; }
   .sp-hint svg { animation: none; }
 }
+.rail-panel:focus { outline: none; }
