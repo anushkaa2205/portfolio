@@ -1,6 +1,6 @@
 import Hero from "@/components/sections/Hero";
 import Aperture from "@/components/Aperture";
-import Work from "@/components/sections/Work";
+import Archive from "@/components/sections/Archive";
 import Philosophy from "@/components/sections/Philosophy";
 import BeyondCode from "@/components/sections/BeyondCode";
 import Contact from "@/components/sections/Contact";
@@ -12,7 +12,7 @@ export default function Home() {
       <VeilRemover />
       <Hero />
       <Aperture />
-      <Work />
+      <Archive />
       <Philosophy />
       <BeyondCode />
       <Contact />

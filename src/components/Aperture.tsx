@@ -8,7 +8,6 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { site } from "@/data/site";
 import { visibleProjects } from "@/data/projects";
 import { prefersReducedMotion } from "@/lib/scroll";
-import { useLenis } from "@/components/SmoothScroll";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -300,31 +299,16 @@ function Chevron() {
 
 export default function Aperture() {
   const root = useRef<HTMLElement>(null);
-  const lenis = useLenis();
-
   /**
-   * A project card here is a way down to that project's card in the Work section, which
-   * holds every detail. On desktop the Work cards run sideways under a sticky stage, so
-   * "where card i is" is a point along that stage's scroll, not the card's own offset.
+   * A project card here is a way into the archive below: it asks the archive to show that
+   * project and take the visitor there (see the "archive:select" listener in Archive.tsx).
+   * Without JS it is still a plain link to #work.
    */
   const goToProject = (e: React.MouseEvent<HTMLAnchorElement>, slug: string) => {
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
-    const stage = document.getElementById("work");
-    const card = document.getElementById(`project-${slug}`);
-    if (!stage || !card) return;
+    if (!document.getElementById("work")) return;
     e.preventDefault();
-    const n = visibleProjects.length;
-    const i = visibleProjects.findIndex((p) => p.slug === slug);
-    const rail = window.matchMedia("(min-width: 1100px)").matches && !prefersReducedMotion();
-    const y = rail
-      ? stage.getBoundingClientRect().top + window.scrollY + (stage.offsetHeight - window.innerHeight) * (n > 1 ? i / (n - 1) : 0)
-      : card.getBoundingClientRect().top + window.scrollY - 76;
-    const ease = (t: number) => 1 - Math.pow(1 - t, 4);
-    if (lenis) lenis.scrollTo(y, { duration: 2, easing: ease });
-    else window.scrollTo({ top: y, behavior: prefersReducedMotion() ? "auto" : "smooth" });
-    // keyboard users land on the card they asked for
-    card.setAttribute("tabindex", "-1");
-    window.setTimeout(() => card.focus({ preventScroll: true }), lenis ? 2000 : 600);
+    window.dispatchEvent(new CustomEvent("archive:select", { detail: slug }));
   };
   // Touch only: which row is open. Hover devices are handled entirely in CSS.
   const [open, setOpen] = useState<number | null>(null);
@@ -341,7 +325,13 @@ export default function Aperture() {
         gsap.set(".ap-disc", { opacity: 1 });
         gsap.set(".ap-stat", { opacity: 1, y: 0 });
         gsap.set(".sp-word", { yPercent: 0 });
-        document.documentElement.classList.add("nav-light");
+        // only while the bone panel is actually under the nav: the sections either side are dark
+        ScrollTrigger.create({
+          trigger: ".ap-disc",
+          start: "top top+=66",
+          end: "bottom top+=66",
+          onToggle: (self) => document.documentElement.classList.toggle("nav-light", self.isActive),
+        });
         return;
       }
 
@@ -443,8 +433,8 @@ export default function Aperture() {
       tl.to(".ap-disc", { opacity: 1, duration: 0.04, ease: "none" }, 0.68)
         .to(sticky, { "--ap-r": 170, ease: "power2.inOut", duration: 0.3 }, 0.7) // ends 1.000
         .to(".ap-ring", { opacity: 0, duration: 0.16, ease: "power1.in" }, 0.72)
-        // four elements at 0.02 apart, so the tail lands at 1.000 — inside the unit
-        .to(".ap-stat", { opacity: 1, y: 0, stagger: 0.02, duration: 0.18, ease: "expo.out" }, 0.76);
+        // the label and every row share 0.06 of stagger however many rows there are, so the tail lands at 1.000
+        .to(".ap-stat", { opacity: 1, y: 0, stagger: { amount: 0.06 }, duration: 0.18, ease: "expo.out" }, 0.76);
 
       // If this ever prints something other than 1, the fractions above have drifted and
       // every cue is firing at the wrong point in the scroll.
@@ -627,7 +617,7 @@ export default function Aperture() {
                 <div className="sp-card-in">
                   {project ? (
                     <a
-                      href={`#project-${project.slug}`}
+                      href="#work"
                       className="sp-face pointer-events-auto"
                       data-edge={c.kind === "shot" && c.edge ? "true" : undefined}
                       data-project={project.slug}

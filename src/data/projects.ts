@@ -17,6 +17,20 @@ export type Project = {
   links: { github?: string; live?: string };
   /** Optional cover; if missing the case study uses a typographic cover. Path under /public. */
   cover?: string;
+  /** A one- or two-word kind of thing, shown beside the number in the archive index. */
+  category: string;
+  /**
+   * How the archive mounts this project. Each project gets a treatment drawn from what it
+   * actually is, so switching projects changes the object on display, not just its label:
+   *  - "chart":  survey graticule + crop marks — for work that models a physical system
+   *  - "redact": no frame, quiet, the data it removes listed and struck out — for privacy work
+   *  - "glow":   the interface's own colours bleed out into the room — for colour-led products
+   *  - "sheets": mounted on a stack of pages — for a product whose output is a document
+   * `marks` are the labels a "redact" treatment strikes out; take them from the summary.
+   * `aura` is the light the artifact sits in: two colours sampled from its own screenshot
+   * (main, then a smaller second light). Each treatment shapes it differently.
+   */
+  artifact: { treatment: "chart" | "redact" | "glow" | "sheets"; marks?: string[]; aura: [string, string] };
   /** Case-study page content. Keep it to what you actually did. */
   caseStudy: {
     problem: string;
@@ -31,6 +45,9 @@ export const projects: Project[] = [
   {
     slug: "udgam",
     cover: "/work/udgam.webp",
+    category: "Modelling",
+    // the steel-blue of its sea chart, deepened, and the orange of its "Open a case" button
+    artifact: { treatment: "chart", aura: ["#2c5a78", "#f27116"] },
     title: "Udgam",
     year: "2026",
     status: "in-progress",
@@ -56,6 +73,9 @@ export const projects: Project[] = [
   {
     slug: "obscura",
     cover: "/work/obscura.webp",
+    category: "Privacy",
+    // its red, low: a darkroom safelight
+    artifact: { treatment: "redact", marks: ["GPS", "Device", "Timestamp"], aura: ["#68211f", "#2a1416"] },
     title: "Obscura",
     year: "2026",
     status: "live",
@@ -79,6 +99,9 @@ export const projects: Project[] = [
   {
     slug: "medora",
     cover: "/work/medora.webp",
+    category: "Health AI",
+    // its blues and the purple of "Redefined"
+    artifact: { treatment: "glow", aura: ["#2f5dc1", "#d48ff5"] },
     title: "Medora",
     year: "2025",
     status: "live",
@@ -102,6 +125,9 @@ export const projects: Project[] = [
   {
     slug: "specforge",
     cover: "/work/specforge.webp",
+    category: "AI SaaS",
+    // its violet
+    artifact: { treatment: "sheets", aura: ["#7734ec", "#ad85ec"] },
     title: "SpecForge",
     year: "2026",
     status: "in-progress",
