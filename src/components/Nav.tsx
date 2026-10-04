@@ -9,7 +9,6 @@ const items = [
   { label: "Tech stack", href: "#index" },
   { label: "Work", href: "#work" },
   { label: "About", href: "#about" },
-  { label: "Philosophy", href: "#philosophy" },
   { label: "Contact", href: "#contact" },
 ];
 

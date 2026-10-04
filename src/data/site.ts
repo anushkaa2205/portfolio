@@ -18,13 +18,6 @@ export const site = {
     resume: "/resume.pdf", // drop your PDF in /public as resume.pdf
   },
 
-  /** The manifesto on the Philosophy section. Each string is one line; words light up on scroll. */
-  manifesto: <string[]>[
-    "I'm still a student, and I plan to stay one. I care about the space between the code and the person using it. I'd rather build one thing that feels right than ten that just work. I sweat the details most people scroll past, because that's where the feeling lives. Every project teaches me something, and I let it.",
-  ],
-  /** The word(s) in the manifesto that take the accent colour. */
-  manifestoAccent: <string[]>["feels right"],
-
   /** Shown in its own strip after Work. */
   beyondCode: "Co-CEO of a student-run non-profit.",
 
