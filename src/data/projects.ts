@@ -1,5 +1,5 @@
 /**
- * One entry per project. Order = display order; the first one is the featured project (inside the eclipse).
+ * One entry per project. Order = display order; the first one is the featured project.
  * To add a project: copy an entry, change the fields, drop a cover image in /public/projects/<slug>.jpg.
  * To hide one: set `hidden: true`.
  */

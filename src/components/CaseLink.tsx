@@ -8,20 +8,20 @@ import { prefersReducedMotion } from "@/lib/scroll";
 export const VEIL_ID = "page-veil";
 
 /**
- * A link that grows a black disc from the click origin (or the eclipse) until it covers the
+ * A link that grows a black disc from the click point (or the screen centre) until it covers the
  * viewport, then navigates. The destination page removes the veil once it has drawn.
  */
 export default function CaseLink({
   href,
   children,
   className,
-  origin = "eclipse",
+  origin = "center",
   style,
 }: {
   href: string;
   children: ReactNode;
   className?: string;
-  origin?: "eclipse" | "pointer";
+  origin?: "center" | "pointer";
   style?: React.CSSProperties;
 }) {
   const router = useRouter();

@@ -37,7 +37,6 @@ export default function CaseStudy({ project, index, next }: { project: Project; 
 
       <header
         className="relative flex min-h-[70svh] flex-col"
-        data-eclipse='{"x":0.86,"y":0.3,"r":0.07,"phase":1,"o":1,"m":{"y":0.22,"r":0.05}}'
       >
         <div className="mono cs-in flex items-center justify-between">
           <CaseLink href="/#work" className="link-line">

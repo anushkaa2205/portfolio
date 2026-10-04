@@ -37,7 +37,6 @@ export default function Stack() {
     <section
       id="stack"
       className="relative py-24 sm:py-32"
-      data-eclipse='{"x":0.5,"y":0.5,"r":0.0,"phase":0.8,"o":0}'
       aria-label="Tech stack"
     >
       <div className="mono mb-8 flex items-center justify-between px-5 sm:px-10">

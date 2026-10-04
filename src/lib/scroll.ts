@@ -1,6 +1,6 @@
 /**
  * A tiny shared store for the scroll state, written by SmoothScroll every frame
- * and read by anything that animates (the eclipse, the ghost trail). No React re-renders.
+ * and read by anything that animates (e.g. the ghost trail). No React re-renders.
  */
 export const scrollState = {
   y: 0,

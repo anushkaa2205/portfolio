@@ -47,9 +47,8 @@ export default function Hero() {
       ref={root}
       id="top"
       className="relative flex min-h-svh flex-col overflow-hidden px-5 pb-8 pt-28 sm:justify-center sm:px-10 sm:pb-0 sm:pt-[calc(4.1rem+9px)]"
-      data-eclipse='{"x":0.5,"y":0.54,"r":0.26,"phase":0.6,"o":1}'
     >
-      {/* the name — sits *behind* the eclipse (z-10 < canvas z-20) */}
+      {/* the name */}
       <div className="pointer-events-none absolute inset-x-0 top-[18vh] z-10 flex justify-center sm:relative sm:inset-x-auto sm:top-auto">
         <div className="hero-name">
           {/* footage layer: bone until the clip is playing, so the name never goes dark */}

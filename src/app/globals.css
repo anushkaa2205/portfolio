@@ -222,8 +222,6 @@ body {
 .status-in-progress::after { content: ""; position: absolute; inset: 0; left: 50%; background: var(--accent); }
 .status-archived { background: transparent; }
 
-.eclipse-layer, .eclipse-layer * { pointer-events: none !important; }
-
 /* ---------- nav over the light panel ---------- */
 /* The default scrim is dark-on-dark-page. Over the bone aperture it inverts,
    otherwise the wordmark and links sit dark-on-dark and vanish. */
