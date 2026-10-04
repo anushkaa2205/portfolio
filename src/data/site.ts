@@ -18,9 +18,6 @@ export const site = {
     resume: "/resume.pdf", // drop your PDF in /public as resume.pdf
   },
 
-  /** Shown in its own strip after Work. */
-  beyondCode: "Co-CEO of a student-run non-profit.",
-
   /** The tech-stack marquee. Two rows, opposite directions. */
   stack: {
     rowA: ["TypeScript", "React", "Next.js", "Tailwind", "GSAP", "Three.js", "Framer Motion", "Node.js", "Express"],
