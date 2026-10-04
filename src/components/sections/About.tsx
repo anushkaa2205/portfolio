@@ -154,7 +154,7 @@ export default function About() {
 
           <section id={about.story.id} className="ab-sub" tabIndex={-1} aria-labelledby={`${about.story.id}-h`}>
             <h3 id={`${about.story.id}-h`} className="ab-sublabel mono" data-ab-in>
-              01 / {about.story.index}
+              {about.story.index}
             </h3>
             <p className="ab-opening" data-ab-in>
               {about.story.opening}
@@ -174,7 +174,7 @@ export default function About() {
 
           <section id={about.doing.id} className="ab-sub" tabIndex={-1} aria-labelledby={`${about.doing.id}-h`}>
             <h3 id={`${about.doing.id}-h`} className="ab-sublabel mono" data-ab-in>
-              02 / {about.doing.index}
+              {about.doing.index}
             </h3>
             <ol className="ab-rows">
               {about.doing.rows.map((r, i) => (
@@ -191,7 +191,7 @@ export default function About() {
 
           <section id={about.values.id} className="ab-sub" tabIndex={-1} aria-labelledby={`${about.values.id}-h`}>
             <h3 id={`${about.values.id}-h`} className="ab-sublabel mono" data-ab-in>
-              03 / {about.values.index}
+              {about.values.index}
             </h3>
             <ol className="ab-values">
               {about.values.items.map((v, i) => (
@@ -213,7 +213,7 @@ export default function About() {
 
           <section id={about.learning.id} className="ab-sub ab-sub-last" tabIndex={-1} aria-labelledby={`${about.learning.id}-h`}>
             <h3 id={`${about.learning.id}-h`} className="ab-sublabel mono" data-ab-in>
-              04 / {about.learning.index}
+              {about.learning.index}
             </h3>
             <p className="ab-statement disp-500" data-ab-in>
               {about.learning.statement}

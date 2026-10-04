@@ -4,7 +4,7 @@
  * experience.
  */
 export const about = {
-  label: "03 — About me",
+  label: "About me",
   aside: "The curiosity archive",
 
   /** The opening statement, one entry per line. The last line takes the accent. */

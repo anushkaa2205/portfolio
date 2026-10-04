@@ -117,7 +117,7 @@ const CARDS: Card[] = [
     kind: "shot",
     src: "/work/noise.webp",
     alt: "Noise — an unfiltered posting board",
-    tag: "05 — Noise",
+    tag: "Noise",
     note: "Web app",
     lift: 0.42,
     stack: { x: -2.88, y: -10, r: -2 },
@@ -161,7 +161,7 @@ const CARDS: Card[] = [
     kind: "shot",
     src: "/work/mytasks.webp",
     alt: "my-tasks — a serverless task list on AWS",
-    tag: "06 — my-tasks",
+    tag: "my-tasks",
     note: "Serverless",
     lift: 0.42,
     stack: { x: 4.12, y: 7, r: 3 },
@@ -649,7 +649,7 @@ export default function Aperture() {
         {/* Act two — what the aperture reveals */}
         <div className="ap-disc absolute inset-0 bg-bone text-ink">
           <div className="flex h-full flex-col pb-8 pt-24 sm:pb-10 sm:pt-28">
-            <span className="ap-stat mono mb-4 block px-5 text-ink/45 sm:mb-6 sm:px-10">01 — Tech stack</span>
+            <span className="ap-stat mono mb-4 block px-5 text-ink/45 sm:mb-6 sm:px-10">Tech stack</span>
 
             {/*
               Three equal-height rows. Each row reserves room for its own list, so opening one

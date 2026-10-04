@@ -443,7 +443,7 @@ export default function Archive() {
     >
       <div className="ar-sticky">
         <header className="ar-head mono">
-          <span className="text-accent">02 — Work</span>
+          <span className="text-accent">Work</span>
           <span className="ar-motto disp-500">Ideas into things.</span>
           <span className="text-dim">
             Plate <span className="text-bone">{pad(index + 1)}</span> / {pad(n)}
